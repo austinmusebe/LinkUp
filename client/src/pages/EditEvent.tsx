@@ -1,9 +1,12 @@
 import { useState, useEffect, FormEvent } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
+import { useAuth } from "../contexts/AuthContext";
 import axios from "axios";
 
-function CreateEvent() {
+function EditEvent() {
+  const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
+  const { user } = useAuth();
   const [categories, setCategories] = useState<string[]>([]);
   const [formData, setFormData] = useState({
     title: "",
@@ -12,10 +15,12 @@ function CreateEvent() {
     location: "",
     categories: [] as string[],
   });
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
+    // Fetch categories
     axios
       .get("http://localhost:3000/api/categories")
       .then((response) => {
@@ -24,7 +29,46 @@ function CreateEvent() {
         }
       })
       .catch((err) => console.error("Failed to fetch categories:", err));
-  }, []);
+
+    // Fetch event
+    const fetchEvent = async () => {
+      try {
+        const response = await axios.get(
+          `http://localhost:3000/api/events/${id}`
+        );
+
+        if (response.data.success) {
+          const event = response.data.data;
+
+          if (event.createdBy._id !== user?.id) {
+            setError("You are not authorized to edit this event");
+            setLoading(false);
+            return;
+          }
+
+          const eventDate = new Date(event.date);
+          const formattedDate = eventDate.toISOString().slice(0, 16);
+
+          setFormData({
+            title: event.title,
+            description: event.description || "",
+            date: formattedDate,
+            location: event.location || "",
+            categories: event.categories || [],
+          });
+        } else {
+          setError(response.data.error || "Event not found");
+        }
+      } catch (err) {
+        setError("Unable to fetch event");
+        console.error("Fetch error:", err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchEvent();
+  }, [id, user]);
 
   const toggleCategory = (category: string) => {
     setFormData((prev) => ({
@@ -37,31 +81,56 @@ function CreateEvent() {
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
-    setLoading(true);
+    setSaving(true);
     setError(null);
 
     try {
-      const response = await axios.post("http://localhost:3000/api/events", {
-        ...formData,
-        date: new Date(formData.date),
-      });
+      const response = await axios.put(
+        `http://localhost:3000/api/events/${id}`,
+        {
+          ...formData,
+          date: new Date(formData.date),
+        }
+      );
 
       if (response.data.success) {
-        navigate("/my-events");
+        navigate(`/events/${id}`);
       } else {
-        setError(response.data.error || "Failed to create event");
+        setError(response.data.error || "Failed to update event");
       }
     } catch (err) {
-      setError("Unable to create event");
-      console.error("Create error:", err);
+      setError("Unable to update event");
+      console.error("Update error:", err);
     } finally {
-      setLoading(false);
+      setSaving(false);
     }
   };
 
+  if (loading) {
+    return <p>Loading event...</p>;
+  }
+
+  if (error && !formData.title) {
+    return (
+      <div>
+        <div
+          style={{
+            padding: "1rem",
+            background: "#f8d7da",
+            borderRadius: "8px",
+            marginBottom: "1rem",
+          }}
+        >
+          <strong>❌ Error:</strong> {error}
+        </div>
+        <button onClick={() => navigate(-1)}>← Go Back</button>
+      </div>
+    );
+  }
+
   return (
     <div style={{ maxWidth: "600px", margin: "0 auto" }}>
-      <h2>Create New Event</h2>
+      <h2>Edit Event</h2>
 
       {error && (
         <div
@@ -214,22 +283,22 @@ function CreateEvent() {
         <div style={{ display: "flex", gap: "1rem" }}>
           <button
             type="submit"
-            disabled={loading || formData.categories.length === 0}
+            disabled={saving || formData.categories.length === 0}
             style={{
               padding: "0.75rem 2rem",
               fontSize: "1rem",
               cursor:
-                loading || formData.categories.length === 0
+                saving || formData.categories.length === 0
                   ? "not-allowed"
                   : "pointer",
-              opacity: loading || formData.categories.length === 0 ? 0.6 : 1,
+              opacity: saving || formData.categories.length === 0 ? 0.6 : 1,
             }}
           >
-            {loading ? "Creating..." : "Create Event"}
+            {saving ? "Saving..." : "Save Changes"}
           </button>
           <button
             type="button"
-            onClick={() => navigate("/")}
+            onClick={() => navigate(`/events/${id}`)}
             style={{
               padding: "0.75rem 2rem",
               fontSize: "1rem",
@@ -256,4 +325,4 @@ function CreateEvent() {
   );
 }
 
-export default CreateEvent;
+export default EditEvent;

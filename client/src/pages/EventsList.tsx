@@ -1,5 +1,8 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
+import { useAuth } from "../contexts/AuthContext";
+import axios from "axios";
+import EventCard from "../components/EventCard";
 
 interface Event {
   _id: string;
@@ -7,42 +10,83 @@ interface Event {
   description?: string;
   date: string;
   location?: string;
+  categories?: string[];
   createdAt: string;
-}
-
-interface ApiResponse {
-  success: boolean;
-  count: number;
-  data: Event[];
-  error?: string;
+  createdBy: {
+    _id: string;
+    name: string;
+    email: string;
+    profilePicture?: string;
+  };
+  matchScore?: number;
 }
 
 function EventsList() {
-  const [events, setEvents] = useState<Event[]>([]);
+  const { user } = useAuth();
+  const [recommendedEvents, setRecommendedEvents] = useState<Event[]>([]);
+  const [allEvents, setAllEvents] = useState<Event[]>([]);
+  const [filteredEvents, setFilteredEvents] = useState<Event[]>([]);
+  const [categories, setCategories] = useState<string[]>([]);
+  const [selectedCategory, setSelectedCategory] = useState<string>("All");
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    const fetchEvents = async () => {
+    const fetchData = async () => {
       try {
-        const response = await fetch("http://localhost:3000/api/events");
-        const data: ApiResponse = await response.json();
+        // Fetch categories
+        const categoriesResponse = await axios.get(
+          "http://localhost:3000/api/categories"
+        );
+        if (categoriesResponse.data.success) {
+          setCategories(categoriesResponse.data.data);
+        }
 
-        if (data.success) {
-          setEvents(data.data);
-        } else {
-          setError(data.error || "Failed to fetch events");
+        // Fetch all events
+        const eventsResponse = await axios.get(
+          "http://localhost:3000/api/events"
+        );
+        if (eventsResponse.data.success) {
+          setAllEvents(eventsResponse.data.data);
+          setFilteredEvents(eventsResponse.data.data);
+        }
+
+        // Fetch recommended events if user is logged in
+        if (user) {
+          try {
+            const recommendedResponse = await axios.get(
+              "http://localhost:3000/api/events/recommended"
+            );
+            if (recommendedResponse.data.success) {
+              setRecommendedEvents(recommendedResponse.data.data);
+            }
+          } catch (err) {
+            console.log("Could not fetch recommendations:", err);
+          }
         }
       } catch (err) {
-        setError("Unable to connect to backend server");
+        setError("Unable to fetch events");
         console.error("Fetch error:", err);
       } finally {
         setLoading(false);
       }
     };
 
-    fetchEvents();
-  }, []);
+    fetchData();
+  }, [user]);
+
+  useEffect(() => {
+    if (selectedCategory === "All") {
+      setFilteredEvents(allEvents);
+    } else {
+      setFilteredEvents(
+        allEvents.filter(
+          (event) =>
+            event.categories && event.categories.includes(selectedCategory)
+        )
+      );
+    }
+  }, [selectedCategory, allEvents]);
 
   if (loading) {
     return <p>Loading events...</p>;
@@ -60,67 +104,186 @@ function EventsList() {
 
   return (
     <div>
-      <h2>Upcoming Events ({events.length})</h2>
-
-      {events.length === 0 ? (
-        <p>
-          No events found. <Link to="/create">Create one!</Link>
-        </p>
-      ) : (
-        <div style={{ display: "flex", flexDirection: "column", gap: "1rem" }}>
-          {events.map((event, index) => (
+      {/* Recommended Section */}
+      {user && recommendedEvents.length > 0 && (
+        <section style={{ marginBottom: "3rem" }}>
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "space-between",
+              alignItems: "center",
+              marginBottom: "1.5rem",
+            }}
+          >
+            <div>
+              <h2 style={{ margin: "0 0 0.5rem 0" }}>Recommended for You</h2>
+              <p style={{ margin: 0, color: "#cececeff", fontSize: "0.9rem" }}>
+                Based on your interests: {user.interests.join(", ")}
+              </p>
+            </div>
             <Link
-              key={event._id}
-              to={`/events/${event._id}`}
-              style={{ textDecoration: "none", color: "inherit" }}
+              to="/profile"
+              style={{ fontSize: "0.9rem", color: "#646cff" }}
             >
-              <div
-                style={{
-                  border: "1px solid #ddd",
-                  padding: "1.5rem",
-                  borderRadius: "8px",
-                  textAlign: "left",
-                  transition: "transform 0.2s, box-shadow 0.2s",
-                  cursor: "pointer",
-
-                  // fadind in part
-                  opacity: 0,
-                  animation: `fadeIn 0.5s ease-out forwards`,
-                  animationDelay: `${index * 0.2}s`,
-                }}
-                onMouseEnter={(e) => {
-                  e.currentTarget.style.transform = "translateY(-2px)";
-                  e.currentTarget.style.boxShadow = "0 4px 8px rgba(0,0,0,0.1)";
-                }}
-                onMouseLeave={(e) => {
-                  e.currentTarget.style.transform = "translateY(0)";
-                  e.currentTarget.style.boxShadow = "none";
-                }}
-              >
-                <h3 style={{ margin: "0 0 0.5rem 0" }}>{event.title}</h3>
-                {event.description && (
-                  <p style={{ margin: "0.5rem 0", color: "#666" }}>
-                    {event.description.substring(0, 100)}
-                    {event.description.length > 100 ? "..." : ""}
-                  </p>
-                )}
-                <div
-                  style={{
-                    display: "flex",
-                    gap: "1rem",
-                    marginTop: "1rem",
-                    fontSize: "0.9rem",
-                    color: "#888",
-                  }}
-                >
-                  <span>📅 {new Date(event.date).toLocaleDateString()}</span>
-                  {event.location && <span>📍 {event.location}</span>}
-                </div>
-              </div>
+              Update interests
             </Link>
-          ))}
+          </div>
+
+          <div
+            style={{
+              display: "grid",
+              gridTemplateColumns: "repeat(auto-fill, minmax(320px, 1fr))",
+              gap: "5rem",
+              paddingBottom: 20,
+            }}
+          >
+            {recommendedEvents.slice(0, 6).map((event) => (
+              <EventCard key={event._id} event={event} showMatchScore={true} />
+            ))}
+          </div>
+        </section>
+      )}
+
+      {/* No Interests Message */}
+      {user && user.interests.length === 0 && (
+        <div
+          style={{
+            background: "#f0f0ff",
+            padding: "1.5rem",
+            borderRadius: "12px",
+            marginBottom: "2rem",
+            textAlign: "center",
+          }}
+        >
+          <h3 style={{ margin: "0 0 0.5rem 0" }}>
+            🎯 Get Personalized Recommendations
+          </h3>
+          <p style={{ margin: "0 0 1rem 0", color: "#666" }}>
+            Set your interests to see events tailored just for you!
+          </p>
+          <Link to="/profile">
+            <button style={{ padding: "0.75rem 1.5rem", cursor: "pointer" }}>
+              Set Your Interests
+            </button>
+          </Link>
         </div>
       )}
+
+      {/* All Events Section */}
+      <section>
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+            marginBottom: "1.5rem",
+          }}
+        >
+          <h2 style={{ margin: 0 }}>
+            {selectedCategory === "All" ? "All Events" : selectedCategory}
+            <span
+              style={{
+                color: "#888",
+                fontWeight: "normal",
+                marginLeft: "0.5rem",
+              }}
+            >
+              ({filteredEvents.length})
+            </span>
+          </h2>
+        </div>
+
+        {/* Category Filter */}
+        <div
+          style={{
+            display: "flex",
+            gap: "0.75rem",
+            overflowX: "auto",
+            paddingBottom: "0.5rem",
+            marginBottom: "1.5rem",
+          }}
+        >
+          <button
+            onClick={() => setSelectedCategory("All")}
+            style={{
+              padding: "0.5rem 1rem",
+              borderRadius: "20px",
+              border:
+                selectedCategory === "All"
+                  ? "2px solid #646cff"
+                  : "1px solid #ddd",
+              background: selectedCategory === "All" ? "#f0f0ff" : "white",
+              color: selectedCategory === "All" ? "#646cff" : "#666",
+              cursor: "pointer",
+              fontSize: "0.9rem",
+              fontWeight: selectedCategory === "All" ? "600" : "400",
+              whiteSpace: "nowrap",
+            }}
+          >
+            All
+          </button>
+          {categories.map((category) => (
+            <button
+              key={category}
+              onClick={() => setSelectedCategory(category)}
+              style={{
+                padding: "0.5rem 1rem",
+                borderRadius: "20px",
+                border:
+                  selectedCategory === category
+                    ? "2px solid #646cff"
+                    : "1px solid #ddd",
+                background: selectedCategory === category ? "#f0f0ff" : "white",
+                color: selectedCategory === category ? "#646cff" : "#666",
+                cursor: "pointer",
+                fontSize: "0.9rem",
+                fontWeight: selectedCategory === category ? "600" : "400",
+                whiteSpace: "nowrap",
+              }}
+            >
+              {category}
+            </button>
+          ))}
+        </div>
+
+        {/* Events Grid */}
+        {filteredEvents.length === 0 ? (
+          <div
+            style={{
+              textAlign: "center",
+              padding: "3rem",
+              color: "#666",
+              background: "#f5f5f5",
+              borderRadius: "12px",
+            }}
+          >
+            <p style={{ margin: "0 0 1rem 0" }}>
+              No events found in this category.
+            </p>
+            {user && (
+              <Link to="/create">
+                <button
+                  style={{ padding: "0.75rem 1.5rem", cursor: "pointer" }}
+                >
+                  Create the First Event
+                </button>
+              </Link>
+            )}
+          </div>
+        ) : (
+          <div
+            style={{
+              display: "grid",
+              gridTemplateColumns: "repeat(auto-fill, minmax(320px, 1fr))",
+              gap: "5rem",
+            }}
+          >
+            {filteredEvents.map((event) => (
+              <EventCard key={event._id} event={event} />
+            ))}
+          </div>
+        )}
+      </section>
     </div>
   );
 }
