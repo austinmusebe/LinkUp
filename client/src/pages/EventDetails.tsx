@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useParams, Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../contexts/AuthContext";
 import axios from "axios";
+import { Calendar, MapPin } from "lucide-react";
 
 interface Event {
   _id: string;
@@ -84,7 +85,7 @@ function EventDetails() {
             marginBottom: "1rem",
           }}
         >
-          <strong>❌ Error:</strong> {error || "Event not found"}
+          <strong>Error:</strong> {error || "Event not found"}
         </div>
         <Link to="/">← Back to Events</Link>
       </div>
@@ -179,8 +180,14 @@ function EventDetails() {
             color: "#666",
           }}
         >
-          <span>📅 {new Date(event.date).toLocaleString()}</span>
-          {event.location && <span>📍 {event.location}</span>}
+          <span>
+            <Calendar size={20} /> {new Date(event.date).toLocaleString()}
+          </span>
+          {event.location && (
+            <span>
+              <MapPin size={20} /> {event.location}
+            </span>
+          )}
         </div>
 
         {event.description && (

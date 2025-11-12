@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import { useAuth } from "../contexts/AuthContext";
 import axios from "axios";
 import EventCard from "../components/EventCard";
+import { Calendar, MapPin } from "lucide-react";
 
 interface Event {
   _id: string;
@@ -97,7 +98,7 @@ function EventsList() {
       <div
         style={{ padding: "1rem", background: "#f8d7da", borderRadius: "8px" }}
       >
-        <strong>❌ Error:</strong> {error}
+        <strong> Error:</strong> {error}
       </div>
     );
   }
@@ -133,7 +134,7 @@ function EventsList() {
             style={{
               display: "grid",
               gridTemplateColumns: "repeat(auto-fill, minmax(320px, 1fr))",
-              gap: "5rem",
+              gap: "1.5rem",
               paddingBottom: 20,
             }}
           >
@@ -275,7 +276,7 @@ function EventsList() {
             style={{
               display: "grid",
               gridTemplateColumns: "repeat(auto-fill, minmax(320px, 1fr))",
-              gap: "5rem",
+              gap: "1.5rem",
             }}
           >
             {filteredEvents.map((event) => (

@@ -10,6 +10,7 @@ import Login from "./pages/Login";
 import Signup from "./pages/Signup";
 import Profile from "./pages/Profile";
 import "./App.css";
+import Landing from "./pages/Landing";
 
 function App() {
   return (
@@ -19,6 +20,7 @@ function App() {
         <Route path="/events/:id" element={<EventDetails />} />
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<Signup />} />
+        <Route path="/landing" element={<Landing />} />
 
         {/* Protected Routes */}
         <Route

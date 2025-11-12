@@ -1,3 +1,4 @@
+import { Calendar, MapPin } from "lucide-react";
 import { Link } from "react-router-dom";
 
 interface EventCardProps {
@@ -152,7 +153,9 @@ function EventCard({ event, showMatchScore = false }: EventCardProps) {
               marginBottom: "0.75rem",
             }}
           >
-            <span>📅 {new Date(event.date).toLocaleDateString()}</span>
+            <span>
+              <Calendar size={20} /> {new Date(event.date).toLocaleDateString()}
+            </span>
             {event.location && (
               <span
                 style={{
@@ -161,7 +164,7 @@ function EventCard({ event, showMatchScore = false }: EventCardProps) {
                   whiteSpace: "nowrap",
                 }}
               >
-                📍 {event.location}
+                <MapPin size={20} /> {event.location}
               </span>
             )}
           </div>
