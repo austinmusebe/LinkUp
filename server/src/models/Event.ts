@@ -7,6 +7,10 @@ const eventSchema = new mongoose.Schema({
   date: { type: Date, default: Date.now },
   location: String,
   categories: [{ type: String, enum: INTEREST_CATEGORIES }],
+  image: {
+    type: String,
+    required: false,
+  },
   createdBy: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "User",

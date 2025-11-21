@@ -1,10 +1,46 @@
 import mongoose from "mongoose";
 import bcrypt from "bcrypt";
+import fs from "fs";
+import path from "path";
 import { User } from "./models/User";
 import { Event } from "./models/Event";
 
 const MONGODB_URI =
   process.env.MONGODB_URI || "mongodb://localhost:27017/linkup";
+
+// Path to your images folder relative to server/src/seed.ts
+const IMAGES_DIR = path.join(__dirname, "../../client/src/assets/images");
+
+// Helper function to get a random image as Base64
+const getRandomImage = () => {
+  try {
+    // Check if directory exists
+    if (!fs.existsSync(IMAGES_DIR)) {
+      console.warn(`⚠️ Images directory not found at: ${IMAGES_DIR}`);
+      return undefined;
+    }
+
+    // Get all files and filter for images
+    const files = fs
+      .readdirSync(IMAGES_DIR)
+      .filter((file) => /\.(jpg|jpeg|png|webp)$/i.test(file));
+
+    if (files.length === 0) return undefined;
+
+    // Pick random file
+    const randomFile = files[Math.floor(Math.random() * files.length)];
+    const filePath = path.join(IMAGES_DIR, randomFile);
+
+    // Read and convert to Base64
+    const bitmap = fs.readFileSync(filePath);
+    const ext = path.extname(randomFile).slice(1); // remove dot
+
+    return `data:image/${ext === "jpg" ? "jpeg" : ext};base64,${bitmap.toString("base64")}`;
+  } catch (error) {
+    console.error("Error reading image files:", error);
+    return undefined;
+  }
+};
 
 async function seed() {
   try {
@@ -46,7 +82,7 @@ async function seed() {
 
     console.log(`✅ Created ${users.length} demo users`);
 
-    // Create demo events with categories
+    // Create demo events with categories and random images
     const dummyEvents = [
       {
         title: "Tech Meetup Nairobi",
@@ -56,6 +92,7 @@ async function seed() {
         location: "iHub, Nairobi",
         categories: ["Tech & Development", "Networking & Professional"],
         createdBy: users[0]._id,
+        image: getRandomImage(),
       },
       {
         title: "Startup Pitch Night",
@@ -68,6 +105,7 @@ async function seed() {
           "Networking & Professional",
         ],
         createdBy: users[0]._id,
+        image: getRandomImage(),
       },
       {
         title: "Coffee & Code",
@@ -77,6 +115,7 @@ async function seed() {
         location: "Java House, Westlands",
         categories: ["Tech & Development", "Social & Meetups"],
         createdBy: users[1]._id,
+        image: getRandomImage(),
       },
       {
         title: "Design Thinking Workshop",
@@ -86,6 +125,7 @@ async function seed() {
         location: "BRCK HQ",
         categories: ["Design & Creative", "Education & Learning"],
         createdBy: users[1]._id,
+        image: getRandomImage(),
       },
       {
         title: "Weekend Yoga Session",
@@ -95,6 +135,7 @@ async function seed() {
         location: "Karura Forest",
         categories: ["Sports & Fitness", "Health & Wellness"],
         createdBy: users[2]._id,
+        image: getRandomImage(),
       },
       {
         title: "Food Lovers Meetup",
@@ -104,6 +145,7 @@ async function seed() {
         location: "Various locations",
         categories: ["Food & Dining", "Social & Meetups"],
         createdBy: users[2]._id,
+        image: getRandomImage(),
       },
       {
         title: "AI/ML Deep Dive",
@@ -113,6 +155,7 @@ async function seed() {
         location: "Moringa School",
         categories: ["Tech & Development", "Education & Learning"],
         createdBy: users[0]._id,
+        image: getRandomImage(),
       },
       {
         title: "Art Gallery Opening",
@@ -122,6 +165,7 @@ async function seed() {
         location: "Nairobi National Museum",
         categories: ["Arts & Culture", "Social & Meetups"],
         createdBy: users[1]._id,
+        image: getRandomImage(),
       },
       {
         title: "Gaming Tournament",
@@ -131,6 +175,7 @@ async function seed() {
         location: "iHub Gaming Lounge",
         categories: ["Gaming & Esports", "Social & Meetups"],
         createdBy: users[2]._id,
+        image: getRandomImage(),
       },
       {
         title: "Live Jazz Night",
@@ -140,6 +185,7 @@ async function seed() {
         location: "The Alchemist",
         categories: ["Music & Entertainment", "Social & Meetups"],
         createdBy: users[1]._id,
+        image: getRandomImage(),
       },
     ];
 
@@ -150,15 +196,15 @@ async function seed() {
     console.log("\n👤 Demo Users:");
     console.log("   Email: john@example.com | Password: password123");
     console.log(
-      "   Interests: Tech & Development, Business & Entrepreneurship, Networking & Professional"
+      "   Interests: Tech & Development, Business & Entrepreneurship, Networking & Professional",
     );
     console.log("\n   Email: jane@example.com | Password: password123");
     console.log(
-      "   Interests: Design & Creative, Arts & Culture, Social & Meetups"
+      "   Interests: Design & Creative, Arts & Culture, Social & Meetups",
     );
     console.log("\n   Email: mike@example.com | Password: password123");
     console.log(
-      "   Interests: Sports & Fitness, Health & Wellness, Food & Dining"
+      "   Interests: Sports & Fitness, Health & Wellness, Food & Dining",
     );
 
     process.exit(0);

@@ -16,11 +16,11 @@ function App() {
   return (
     <Layout>
       <Routes>
-        <Route path="/" element={<EventsList />} />
+        <Route path="/events" element={<EventsList />} />
         <Route path="/events/:id" element={<EventDetails />} />
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<Signup />} />
-        <Route path="/landing" element={<Landing />} />
+        <Route path="/" element={<Landing />} />
 
         {/* Protected Routes */}
         <Route

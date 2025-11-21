@@ -1,13 +1,15 @@
 #root {
   /* max-width: 1280px; */
   margin: 0 auto;
-  padding: 2rem;
+  /*padding: 2rem;*/
   text-align: center;
 }
 
 .App {
   /* max-width: 800px; */
   margin: 0 auto;
+  /*min-width: 100vw;
+  min-height: 100vh;*/
 }
 
 h1 {
@@ -21,4 +23,11 @@ h2 {
 
 p {
   margin: 0.5rem 0;
+}
+.landing-nav-item {
+  font-weight: 1000;
+}
+.landing-join-button {
+  font-family: "SF Pro Display";
+  font-weight: 700;
 }

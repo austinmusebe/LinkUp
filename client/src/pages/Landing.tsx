@@ -15,9 +15,9 @@ function Landing() {
         overflow: "hidden",
         margin: 0,
         padding: 0,
-        fontFamily: "Apple Garamond",
-        lineHeight: "1.6", // Increases space between lines
-        letterSpacing: "0.5px", // Adds a tiny bit of space between letters
+        fontFamily: "SF Pro",
+        lineHeight: "1.6",
+        letterSpacing: "0.5px",
       }}
     >
       {/* Navigation */}
@@ -30,6 +30,7 @@ function Landing() {
           position: "relative",
           zIndex: 10,
           whiteSpace: "nowrap",
+          fontWeight: 900,
         }}
       >
         <div
@@ -38,7 +39,7 @@ function Landing() {
             alignItems: "center",
             gap: "0.5rem",
             fontSize: "1.8rem",
-            fontWeight: "600",
+            fontWeight: "900",
             color: "white",
           }}
         >
@@ -58,11 +59,12 @@ function Landing() {
             gap: "2.5rem",
             alignItems: "center",
             fontSize: "1rem",
-            fontFamily: "'EB Garamond', serif",
+            fontFamily: "'SF Pro Display', serif",
           }}
         >
           <a
-            href="#functions"
+            className="landing-nav-item"
+            href="/events"
             style={{
               color: "rgba(255,255,255,0.8)",
               textDecoration: "none",
@@ -73,9 +75,10 @@ function Landing() {
               (e.currentTarget.style.color = "rgba(255,255,255,0.8)")
             }
           >
-            Functions
+            Events
           </a>
           <a
+            className="landing-nav-item"
             href="#conferences"
             style={{
               color: "rgba(255,255,255,0.8)",
@@ -90,6 +93,7 @@ function Landing() {
             Conferences
           </a>
           <a
+            className="landing-nav-item"
             href="#plots"
             style={{
               color: "rgba(255,255,255,0.8)",
@@ -266,7 +270,7 @@ function Landing() {
             color: "rgba(255,255,255,0.6)",
             marginBottom: "3rem",
             textAlign: "center",
-            fontFamily: "'EB Garamond', serif",
+            fontFamily: "'SF Pro', serif",
           }}
         >
           Fill up your calendar and grow quicker.
@@ -275,6 +279,7 @@ function Landing() {
         {/* CTA Button */}
         <Link to="/signup" style={{ textDecoration: "none" }}>
           <button
+            className="landing-join-button"
             style={{
               fontSize: "1.1rem",
               padding: "1rem 2.5rem",
@@ -283,7 +288,6 @@ function Landing() {
               background: "rgba(255,255,255,0.15)",
               color: "white",
               cursor: "pointer",
-              fontWeight: "500",
               transition: "all 0.3s",
             }}
             onMouseEnter={(e) => {
