@@ -8,6 +8,7 @@ function Login() {
   const [formData, setFormData] = useState({ email: "", password: "" });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [isHovered, setIsHovered] = useState(false);
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
@@ -26,82 +27,103 @@ function Login() {
 
   return (
     <div style={{ maxWidth: "400px", margin: "0 auto" }}>
-      <h2>Login</h2>
+      <div
+        style={{
+          backgroundColor: "#D9D9D9",
+          borderRadius: "6px",
+          justifySelf: "center",
+          marginTop: "30vh",
+          fontFamily: "SF Pro, serif",
+          padding: "50px",
+        }}
+      >
+        <h2>Login</h2>
 
-      {error && (
-        <div
-          style={{
-            padding: "1rem",
-            background: "#f8d7da",
-            borderRadius: "8px",
-            marginBottom: "1rem",
-          }}
-        >
-          {error}
-        </div>
-      )}
-
-      <form onSubmit={handleSubmit} style={{ textAlign: "left" }}>
-        <div style={{ marginBottom: "1rem" }}>
-          <label
+        {error && (
+          <div
             style={{
-              display: "block",
-              marginBottom: "0.5rem",
-              fontWeight: "bold",
+              padding: "1rem",
+              background: "#f8d7da",
+              borderRadius: "8px",
+              marginBottom: "1rem",
             }}
           >
-            Email
-          </label>
-          <input
-            type="email"
-            value={formData.email}
-            onChange={(e) =>
-              setFormData({ ...formData, email: e.target.value })
-            }
-            required
-            style={{ width: "100%", padding: "0.5rem", fontSize: "1rem" }}
-          />
-        </div>
+            {error}
+          </div>
+        )}
 
-        <div style={{ marginBottom: "1.5rem" }}>
-          <label
+        <form onSubmit={handleSubmit} style={{ textAlign: "left" }}>
+          <div style={{ marginBottom: "1rem" }}>
+            <label
+              style={{
+                display: "block",
+                marginBottom: "0.5rem",
+                fontWeight: "bold",
+                fontSize: "1.5rem",
+              }}
+            >
+              Email
+            </label>
+            <input
+              type="email"
+              value={formData.email}
+              onChange={(e) =>
+                setFormData({ ...formData, email: e.target.value })
+              }
+              required
+              style={{ width: "100%", padding: "0.5rem", fontSize: "1rem" }}
+            />
+          </div>
+
+          <div style={{ marginBottom: "1.5rem" }}>
+            <label
+              style={{
+                display: "block",
+                marginBottom: "0.5rem",
+                fontWeight: "bold",
+                fontSize: "1.5rem",
+              }}
+            >
+              Password
+            </label>
+            <input
+              type="password"
+              value={formData.password}
+              onChange={(e) =>
+                setFormData({ ...formData, password: e.target.value })
+              }
+              required
+              style={{ width: "100%", padding: "0.5rem", fontSize: "1rem" }}
+            />
+          </div>
+
+          <button
+            type="submit"
+            disabled={loading}
             style={{
-              display: "block",
-              marginBottom: "0.5rem",
-              fontWeight: "bold",
+              width: "100%",
+              padding: "0.75rem",
+              fontSize: "1.5rem",
+              cursor: loading ? "not-allowed" : "pointer",
+              opacity: loading ? 0.6 : 1,
+              backgroundColor: "#000000",
+              color: "#D9D9D9",
+              transform: isHovered ? "translateY(-1.5px)" : "translateY(0px)",
             }}
+            className="login-button"
+            onMouseEnter={() => setIsHovered(true)}
+            onMouseLeave={() => setIsHovered(false)}
           >
-            Password
-          </label>
-          <input
-            type="password"
-            value={formData.password}
-            onChange={(e) =>
-              setFormData({ ...formData, password: e.target.value })
-            }
-            required
-            style={{ width: "100%", padding: "0.5rem", fontSize: "1rem" }}
-          />
-        </div>
+            {loading ? "Logging in..." : "Login"}
+          </button>
+        </form>
 
-        <button
-          type="submit"
-          disabled={loading}
-          style={{
-            width: "100%",
-            padding: "0.75rem",
-            fontSize: "1rem",
-            cursor: loading ? "not-allowed" : "pointer",
-            opacity: loading ? 0.6 : 1,
-          }}
+        <p
+          style={{ marginTop: "1rem", textAlign: "center", fontSize: "1.2rem" }}
         >
-          {loading ? "Logging in..." : "Login"}
-        </button>
-      </form>
-
-      <p style={{ marginTop: "1rem", textAlign: "center" }}>
-        Don't have an account? <Link to="/signup">Sign up</Link>
-      </p>
+          Don't have an account? <Link to="/signup">Sign up</Link>
+        </p>
+      </div>
     </div>
   );
 }

@@ -32,7 +32,7 @@ function EventsList() {
   const [selectedCategory, setSelectedCategory] =
     useState<string>("All Categories");
   const [selectedDateFilter, setSelectedDateFilter] =
-    useState<string>("This Month");
+    useState<string>("All Time");
   const [searchQuery, setSearchQuery] = useState("");
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -40,7 +40,13 @@ function EventsList() {
   const [showDateDropdown, setShowDateDropdown] = useState(false);
   const [showProfileDropdown, setShowProfileDropdown] = useState(false);
 
-  const dateFilters = ["This Week", "This Month", "Next 3 Months", "Next Year"];
+  const dateFilters = [
+    "All Time",
+    "This Week",
+    "This Month",
+    "Next 3 Months",
+    "Next Year",
+  ];
 
   useEffect(() => {
     const fetchData = async () => {
@@ -105,6 +111,8 @@ function EventsList() {
       const diffDays = diffTime / (1000 * 60 * 60 * 24);
 
       switch (selectedDateFilter) {
+        case "All Time":
+          return true;
         case "This Week":
           return diffDays >= 0 && diffDays <= 7;
         case "This Month":
