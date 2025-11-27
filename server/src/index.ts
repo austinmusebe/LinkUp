@@ -19,14 +19,14 @@ mongoose
 // Recommendation Algorithm
 function calculateMatchScore(
   userInterests: string[],
-  eventCategories: string[]
+  eventCategories: string[],
 ): number {
   if (!eventCategories || eventCategories.length === 0) return 0;
   if (!userInterests || userInterests.length === 0) return 0;
 
   // Count matching categories
   const matches = eventCategories.filter((cat) =>
-    userInterests.includes(cat)
+    userInterests.includes(cat),
   ).length;
 
   // Calculate percentage match
@@ -45,13 +45,13 @@ const app = new Elysia()
         "http://localhost:5175",
       ],
       credentials: true,
-    })
+    }),
   )
   .use(
     staticPlugin({
       assets: "uploads",
       prefix: "/uploads",
-    })
+    }),
   )
 
   // Health check
@@ -311,7 +311,7 @@ const app = new Elysia()
     try {
       const event = await Event.findById(params.id).populate(
         "createdBy",
-        "name email profilePicture"
+        "name email profilePicture",
       );
 
       if (!event) {
@@ -355,7 +355,7 @@ const app = new Elysia()
 
       const populatedEvent = await Event.findById(event._id).populate(
         "createdBy",
-        "name email profilePicture"
+        "name email profilePicture",
       );
 
       return { success: true, data: populatedEvent };
@@ -386,7 +386,7 @@ const app = new Elysia()
 
       const updatedEvent = await Event.findById(event._id).populate(
         "createdBy",
-        "name email profilePicture"
+        "name email profilePicture",
       );
 
       return { success: true, data: updatedEvent };
@@ -417,6 +417,44 @@ const app = new Elysia()
       return { success: true, message: "Event deleted" };
     } catch (error) {
       return { success: false, error: "Failed to delete event" };
+    }
+  })
+
+  .post("/api/events/:id/image", async ({ headers, params, body }: any) => {
+    const auth = authMiddleware(headers.authorization);
+    if (!auth.success) {
+      return auth;
+    }
+
+    try {
+      const { image } = body;
+
+      if (!image) {
+        return { success: false, error: "No image provided" };
+      }
+
+      const event = await Event.findById(params.id);
+
+      if (!event) {
+        return { success: false, error: "Event not found" };
+      }
+
+      // Check ownership
+      if (event.createdBy.toString() !== auth.userId) {
+        return { success: false, error: "Not authorized to update this event" };
+      }
+
+      event.eventImage = image;
+      await event.save();
+
+      const updatedEvent = await Event.findById(event._id).populate(
+        "createdBy",
+        "name email profilePicture",
+      );
+
+      return { success: true, data: updatedEvent };
+    } catch (error) {
+      return { success: false, error: "Failed to upload event image" };
     }
   })
 

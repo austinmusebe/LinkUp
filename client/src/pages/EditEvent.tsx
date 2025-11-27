@@ -1,4 +1,4 @@
-import { useState, useEffect, FormEvent } from "react";
+import { useState, useEffect, FormEvent, ChangeEvent } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { useAuth } from "../contexts/AuthContext";
 import axios from "axios";
@@ -15,6 +15,8 @@ function EditEvent() {
     location: "",
     categories: [] as string[],
   });
+  const [eventImage, setEventImage] = useState<string>("");
+  const [imagePreview, setImagePreview] = useState<string>("");
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -34,7 +36,7 @@ function EditEvent() {
     const fetchEvent = async () => {
       try {
         const response = await axios.get(
-          `http://localhost:3000/api/events/${id}`
+          `http://localhost:3000/api/events/${id}`,
         );
 
         if (response.data.success) {
@@ -56,6 +58,11 @@ function EditEvent() {
             location: event.location || "",
             categories: event.categories || [],
           });
+
+          if (event.eventImage) {
+            setEventImage(event.eventImage);
+            setImagePreview(event.eventImage);
+          }
         } else {
           setError(response.data.error || "Event not found");
         }
@@ -69,6 +76,19 @@ function EditEvent() {
 
     fetchEvent();
   }, [id, user]);
+
+  const handleImageChange = (e: ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onloadend = () => {
+      const base64String = reader.result as string;
+      setEventImage(base64String);
+      setImagePreview(base64String);
+    };
+    reader.readAsDataURL(file);
+  };
 
   const toggleCategory = (category: string) => {
     setFormData((prev) => ({
@@ -90,7 +110,8 @@ function EditEvent() {
         {
           ...formData,
           date: new Date(formData.date),
-        }
+          eventImage: eventImage,
+        },
       );
 
       if (response.data.success) {
@@ -107,220 +128,507 @@ function EditEvent() {
   };
 
   if (loading) {
-    return <p>Loading event...</p>;
+    return (
+      <div
+        style={{
+          background: "#D9D9D9",
+          minHeight: "100vh",
+          padding: "3rem",
+          fontFamily: '"EB Garamond", serif',
+        }}
+      >
+        <p>Loading event...</p>
+      </div>
+    );
   }
 
   if (error && !formData.title) {
     return (
-      <div>
-        <div
-          style={{
-            padding: "1rem",
-            background: "#f8d7da",
-            borderRadius: "8px",
-            marginBottom: "1rem",
-          }}
-        >
-          <strong>❌ Error:</strong> {error}
+      <div
+        style={{
+          background: "#D9D9D9",
+          minHeight: "100vh",
+          padding: "3rem",
+          fontFamily: '"EB Garamond", serif',
+        }}
+      >
+        <div style={{ maxWidth: "700px", margin: "0 auto" }}>
+          <div
+            style={{
+              padding: "1rem",
+              background: "#f8d7da",
+              borderRadius: "8px",
+              marginBottom: "1rem",
+              color: "#721c24",
+            }}
+          >
+            <strong>❌ Error:</strong> {error}
+          </div>
+          <button
+            onClick={() => navigate(-1)}
+            style={{
+              padding: "0.75rem 1.5rem",
+              borderRadius: "8px",
+              border: "2px solid #999",
+              background: "white",
+              cursor: "pointer",
+              fontSize: "1rem",
+            }}
+          >
+            ← Go Back
+          </button>
         </div>
-        <button onClick={() => navigate(-1)}>← Go Back</button>
       </div>
     );
   }
 
   return (
-    <div style={{ maxWidth: "600px", margin: "0 auto" }}>
-      <h2>Edit Event</h2>
-
-      {error && (
-        <div
+    <div
+      style={{
+        background: "#D9D9D9",
+        minHeight: "100vh",
+        padding: "3rem",
+        fontFamily: '"EB Garamond", serif',
+      }}
+    >
+      <div style={{ maxWidth: "700px", margin: "0 auto" }}>
+        <h2
           style={{
-            padding: "1rem",
-            background: "#f8d7da",
-            borderRadius: "8px",
-            marginBottom: "1rem",
+            fontSize: "3rem",
+            fontWeight: "600",
+            marginBottom: "2rem",
+            color: "#000",
           }}
         >
-          <strong>❌ Error:</strong> {error}
-        </div>
-      )}
+          Edit Event
+        </h2>
 
-      <form onSubmit={handleSubmit} style={{ textAlign: "left" }}>
-        <div style={{ marginBottom: "1rem" }}>
-          <label
-            style={{
-              display: "block",
-              marginBottom: "0.5rem",
-              fontWeight: "bold",
-            }}
-          >
-            Event Title *
-          </label>
-          <input
-            type="text"
-            value={formData.title}
-            onChange={(e) =>
-              setFormData({ ...formData, title: e.target.value })
-            }
-            required
-            style={{ width: "100%", padding: "0.5rem", fontSize: "1rem" }}
-          />
-        </div>
-
-        <div style={{ marginBottom: "1rem" }}>
-          <label
-            style={{
-              display: "block",
-              marginBottom: "0.5rem",
-              fontWeight: "bold",
-            }}
-          >
-            Description
-          </label>
-          <textarea
-            value={formData.description}
-            onChange={(e) =>
-              setFormData({ ...formData, description: e.target.value })
-            }
-            rows={4}
-            style={{ width: "100%", padding: "0.5rem", fontSize: "1rem" }}
-          />
-        </div>
-
-        <div style={{ marginBottom: "1rem" }}>
-          <label
-            style={{
-              display: "block",
-              marginBottom: "0.5rem",
-              fontWeight: "bold",
-            }}
-          >
-            Date & Time *
-          </label>
-          <input
-            type="datetime-local"
-            value={formData.date}
-            onChange={(e) => setFormData({ ...formData, date: e.target.value })}
-            required
-            style={{ width: "100%", padding: "0.5rem", fontSize: "1rem" }}
-          />
-        </div>
-
-        <div style={{ marginBottom: "1.5rem" }}>
-          <label
-            style={{
-              display: "block",
-              marginBottom: "0.5rem",
-              fontWeight: "bold",
-            }}
-          >
-            Location
-          </label>
-          <input
-            type="text"
-            value={formData.location}
-            onChange={(e) =>
-              setFormData({ ...formData, location: e.target.value })
-            }
-            style={{ width: "100%", padding: "0.5rem", fontSize: "1rem" }}
-          />
-        </div>
-
-        {/* Categories Selection */}
-        <div style={{ marginBottom: "1.5rem" }}>
-          <label
-            style={{
-              display: "block",
-              marginBottom: "0.5rem",
-              fontWeight: "bold",
-            }}
-          >
-            Event Categories *
-          </label>
-          <p
-            style={{ fontSize: "0.9rem", color: "#666", marginBottom: "1rem" }}
-          >
-            Select categories that best describe your event
-          </p>
+        {error && (
           <div
             style={{
-              display: "grid",
-              gridTemplateColumns: "repeat(auto-fill, minmax(200px, 1fr))",
-              gap: "0.75rem",
+              padding: "1rem",
+              background: "#f8d7da",
+              borderRadius: "8px",
+              marginBottom: "1rem",
+              color: "#721c24",
             }}
           >
-            {categories.map((category) => (
-              <label
-                key={category}
+            <strong>❌ Error:</strong> {error}
+          </div>
+        )}
+
+        <form onSubmit={handleSubmit}>
+          {/* Event Image Upload */}
+          <div
+            style={{
+              background: "#E8E8E8",
+              borderRadius: "12px",
+              padding: "2rem",
+              marginBottom: "1.5rem",
+              boxShadow: "0 2px 8px rgba(0,0,0,0.1)",
+            }}
+          >
+            <label
+              style={{
+                display: "block",
+                marginBottom: "1rem",
+                fontWeight: "600",
+                fontSize: "1.2rem",
+                color: "#333",
+              }}
+            >
+              Event Image
+            </label>
+
+            <div
+              style={{
+                display: "flex",
+                alignItems: "center",
+                gap: "2rem",
+              }}
+            >
+              <div
                 style={{
+                  width: "200px",
+                  height: "150px",
+                  borderRadius: "8px",
+                  background: imagePreview ? "transparent" : "#C4C4C4",
                   display: "flex",
                   alignItems: "center",
-                  padding: "0.75rem",
-                  border: "2px solid",
-                  borderColor: formData.categories.includes(category)
-                    ? "#646cff"
-                    : "#ddd",
-                  borderRadius: "8px",
-                  cursor: "pointer",
-                  background: formData.categories.includes(category)
-                    ? "#f0f0ff"
-                    : "white",
-                  transition: "all 0.2s",
+                  justifyContent: "center",
+                  overflow: "hidden",
+                  border: "2px solid #6C7DC6",
                 }}
               >
-                <input
-                  type="checkbox"
-                  checked={formData.categories.includes(category)}
-                  onChange={() => toggleCategory(category)}
-                  style={{ marginRight: "0.5rem" }}
-                />
-                <span style={{ fontSize: "0.9rem" }}>{category}</span>
-              </label>
-            ))}
+                {imagePreview ? (
+                  <img
+                    src={imagePreview}
+                    alt="Event preview"
+                    style={{
+                      width: "100%",
+                      height: "100%",
+                      objectFit: "cover",
+                    }}
+                  />
+                ) : (
+                  <span style={{ color: "#666", fontSize: "1rem" }}>
+                    No image
+                  </span>
+                )}
+              </div>
+
+              <div
+                style={{
+                  display: "flex",
+                  flexDirection: "column",
+                  gap: "1rem",
+                }}
+              >
+                <label
+                  style={{
+                    padding: "0.75rem 2rem",
+                    background: "#394A93",
+                    color: "white",
+                    borderRadius: "8px",
+                    cursor: "pointer",
+                    fontSize: "1.1rem",
+                    fontWeight: "500",
+                    transition: "background 0.3s",
+                    textAlign: "center",
+                  }}
+                >
+                  {imagePreview ? "Change Image" : "Upload Image"}
+                  <input
+                    type="file"
+                    accept="image/*"
+                    onChange={handleImageChange}
+                    style={{ display: "none" }}
+                  />
+                </label>
+
+                {imagePreview && (
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setEventImage("");
+                      setImagePreview("");
+                    }}
+                    style={{
+                      padding: "0.75rem 2rem",
+                      background: "#dc3545",
+                      color: "white",
+                      borderRadius: "8px",
+                      border: "none",
+                      cursor: "pointer",
+                      fontSize: "1.1rem",
+                      fontWeight: "500",
+                    }}
+                  >
+                    Remove Image
+                  </button>
+                )}
+              </div>
+            </div>
+            <p
+              style={{
+                fontSize: "0.95rem",
+                color: "#666",
+                marginTop: "0.75rem",
+              }}
+            >
+              Upload an image to make your event stand out (optional)
+            </p>
           </div>
-        </div>
 
-        <div style={{ display: "flex", gap: "1rem" }}>
-          <button
-            type="submit"
-            disabled={saving || formData.categories.length === 0}
+          {/* Event Title */}
+          <div
             style={{
-              padding: "0.75rem 2rem",
-              fontSize: "1rem",
-              cursor:
-                saving || formData.categories.length === 0
-                  ? "not-allowed"
-                  : "pointer",
-              opacity: saving || formData.categories.length === 0 ? 0.6 : 1,
+              background: "#E8E8E8",
+              borderRadius: "12px",
+              padding: "2rem",
+              marginBottom: "1.5rem",
+              boxShadow: "0 2px 8px rgba(0,0,0,0.1)",
             }}
           >
-            {saving ? "Saving..." : "Save Changes"}
-          </button>
-          <button
-            type="button"
-            onClick={() => navigate(`/events/${id}`)}
-            style={{
-              padding: "0.75rem 2rem",
-              fontSize: "1rem",
-              cursor: "pointer",
-            }}
-          >
-            Cancel
-          </button>
-        </div>
+            <label
+              style={{
+                display: "block",
+                marginBottom: "0.75rem",
+                fontWeight: "600",
+                fontSize: "1.2rem",
+                color: "#333",
+              }}
+            >
+              Event Title *
+            </label>
+            <input
+              type="text"
+              value={formData.title}
+              onChange={(e) =>
+                setFormData({ ...formData, title: e.target.value })
+              }
+              required
+              style={{
+                width: "100%",
+                padding: "0.875rem 1rem",
+                fontSize: "1.1rem",
+                border: "2px solid #C4C4C4",
+                borderRadius: "8px",
+                background: "white",
+                fontFamily: '"EB Garamond", serif',
+              }}
+            />
+          </div>
 
-        {formData.categories.length === 0 && (
-          <p
+          {/* Description */}
+          <div
             style={{
-              color: "#dc3545",
-              fontSize: "0.85rem",
-              marginTop: "0.5rem",
+              background: "#E8E8E8",
+              borderRadius: "12px",
+              padding: "2rem",
+              marginBottom: "1.5rem",
+              boxShadow: "0 2px 8px rgba(0,0,0,0.1)",
             }}
           >
-            Please select at least one category
-          </p>
-        )}
-      </form>
+            <label
+              style={{
+                display: "block",
+                marginBottom: "0.75rem",
+                fontWeight: "600",
+                fontSize: "1.2rem",
+                color: "#333",
+              }}
+            >
+              Description
+            </label>
+            <textarea
+              value={formData.description}
+              onChange={(e) =>
+                setFormData({ ...formData, description: e.target.value })
+              }
+              rows={5}
+              style={{
+                width: "100%",
+                padding: "0.875rem 1rem",
+                fontSize: "1.1rem",
+                border: "2px solid #C4C4C4",
+                borderRadius: "8px",
+                background: "white",
+                fontFamily: '"EB Garamond", serif',
+                resize: "vertical",
+              }}
+            />
+          </div>
+
+          {/* Date & Time */}
+          <div
+            style={{
+              background: "#E8E8E8",
+              borderRadius: "12px",
+              padding: "2rem",
+              marginBottom: "1.5rem",
+              boxShadow: "0 2px 8px rgba(0,0,0,0.1)",
+            }}
+          >
+            <label
+              style={{
+                display: "block",
+                marginBottom: "0.75rem",
+                fontWeight: "600",
+                fontSize: "1.2rem",
+                color: "#333",
+              }}
+            >
+              Date & Time *
+            </label>
+            <input
+              type="datetime-local"
+              value={formData.date}
+              onChange={(e) =>
+                setFormData({ ...formData, date: e.target.value })
+              }
+              required
+              style={{
+                width: "100%",
+                padding: "0.875rem 1rem",
+                fontSize: "1.1rem",
+                border: "2px solid #C4C4C4",
+                borderRadius: "8px",
+                background: "white",
+                fontFamily: '"EB Garamond", serif',
+              }}
+            />
+          </div>
+
+          {/* Location */}
+          <div
+            style={{
+              background: "#E8E8E8",
+              borderRadius: "12px",
+              padding: "2rem",
+              marginBottom: "1.5rem",
+              boxShadow: "0 2px 8px rgba(0,0,0,0.1)",
+            }}
+          >
+            <label
+              style={{
+                display: "block",
+                marginBottom: "0.75rem",
+                fontWeight: "600",
+                fontSize: "1.2rem",
+                color: "#333",
+              }}
+            >
+              Location
+            </label>
+            <input
+              type="text"
+              value={formData.location}
+              onChange={(e) =>
+                setFormData({ ...formData, location: e.target.value })
+              }
+              style={{
+                width: "100%",
+                padding: "0.875rem 1rem",
+                fontSize: "1.1rem",
+                border: "2px solid #C4C4C4",
+                borderRadius: "8px",
+                background: "white",
+                fontFamily: '"EB Garamond", serif',
+              }}
+            />
+          </div>
+
+          {/* Categories Selection */}
+          <div
+            style={{
+              background: "#E8E8E8",
+              borderRadius: "12px",
+              padding: "2rem",
+              marginBottom: "2rem",
+              boxShadow: "0 2px 8px rgba(0,0,0,0.1)",
+            }}
+          >
+            <label
+              style={{
+                display: "block",
+                marginBottom: "0.75rem",
+                fontWeight: "600",
+                fontSize: "1.2rem",
+                color: "#333",
+              }}
+            >
+              Event Categories *
+            </label>
+            <p
+              style={{ fontSize: "1rem", color: "#666", marginBottom: "1rem" }}
+            >
+              Select categories that best describe your event
+            </p>
+            <div
+              style={{
+                display: "grid",
+                gridTemplateColumns: "repeat(auto-fill, minmax(220px, 1fr))",
+                gap: "1rem",
+              }}
+            >
+              {categories.map((category) => (
+                <label
+                  key={category}
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    padding: "1rem 1.25rem",
+                    border: "2px solid",
+                    borderColor: formData.categories.includes(category)
+                      ? "#6C7DC6"
+                      : "#C4C4C4",
+                    borderRadius: "10px",
+                    cursor: "pointer",
+                    background: formData.categories.includes(category)
+                      ? "#F0F2FF"
+                      : "white",
+                    transition: "all 0.2s",
+                    fontSize: "1.05rem",
+                  }}
+                >
+                  <input
+                    type="checkbox"
+                    checked={formData.categories.includes(category)}
+                    onChange={() => toggleCategory(category)}
+                    style={{
+                      marginRight: "0.75rem",
+                      width: "18px",
+                      height: "18px",
+                    }}
+                  />
+                  <span>{category}</span>
+                </label>
+              ))}
+            </div>
+          </div>
+
+          <div
+            style={{ display: "flex", gap: "1rem", justifyContent: "flex-end" }}
+          >
+            <button
+              type="button"
+              onClick={() => navigate(`/events/${id}`)}
+              style={{
+                padding: "1rem 2.5rem",
+                fontSize: "1.1rem",
+                borderRadius: "8px",
+                border: "2px solid #999",
+                background: "white",
+                color: "#333",
+                cursor: "pointer",
+                fontWeight: "500",
+                fontFamily: '"EB Garamond", serif',
+              }}
+            >
+              Cancel
+            </button>
+            <button
+              type="submit"
+              disabled={saving || formData.categories.length === 0}
+              style={{
+                padding: "1rem 2.5rem",
+                fontSize: "1.1rem",
+                borderRadius: "8px",
+                border: "none",
+                background: "#6C7DC6",
+                color: "white",
+                cursor:
+                  saving || formData.categories.length === 0
+                    ? "not-allowed"
+                    : "pointer",
+                opacity: saving || formData.categories.length === 0 ? 0.6 : 1,
+                fontWeight: "500",
+                fontFamily: '"EB Garamond", serif',
+              }}
+            >
+              {saving ? "Saving..." : "Save Changes"}
+            </button>
+          </div>
+
+          {formData.categories.length === 0 && (
+            <p
+              style={{
+                color: "#dc3545",
+                fontSize: "0.95rem",
+                marginTop: "0.75rem",
+                textAlign: "right",
+              }}
+            >
+              Please select at least one category
+            </p>
+          )}
+        </form>
+      </div>
+
+      <style>{`
+        @import url('https://fonts.googleapis.com/css2?family=EB+Garamond:wght@400;500;600;700&display=swap');
+      `}</style>
     </div>
   );
 }

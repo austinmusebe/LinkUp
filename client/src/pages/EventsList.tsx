@@ -11,7 +11,7 @@ interface Event {
   date: string;
   location?: string;
   categories?: string[];
-  image: string;
+  eventImage?: string; // Add this line
   createdAt: string;
   createdBy: {
     _id: string;
@@ -558,20 +558,21 @@ function EventsList() {
               </div>
 
               {/* Image Area */}
+              {/* Event Image */}
               <div
                 style={{
                   width: "100%",
                   height: "150px",
-                  background: "#C4C4C4",
+                  background: event.eventImage ? "transparent" : "#C4C4C4",
                   display: "flex",
                   alignItems: "center",
                   justifyContent: "center",
-                  overflow: "hidden", // Added to crop images cleanly
+                  overflow: "hidden",
                 }}
               >
-                {event.image ? (
+                {event.eventImage ? (
                   <img
-                    src={event.image}
+                    src={event.eventImage}
                     alt={event.title}
                     style={{
                       width: "100%",
