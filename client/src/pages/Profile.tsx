@@ -3,7 +3,6 @@ import { useAuth } from "../contexts/AuthContext";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import linkEmoji from "../assets/link-emoji.png";
-import { FlagTriangleLeft } from "lucide-react";
 
 function Profile() {
   const { user, updateUser, logout } = useAuth();

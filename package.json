@@ -6,7 +6,8 @@
     "server"
   ],
   "scripts": {
-    "dev": "concurrently \"bun run dev:server\" \"bun run dev:client\" --kill-others --success when_stopped --kill-others-on-fail",
+    "dev": "bun run cleanup && concurrently \"bun run dev:server\" \"bun run dev:client\" --kill-others --success when_stopped --kill-others-on-fail",
+    "cleanup": "kill-port 3000 5173",
     "dev:server": "bun run --filter server start",
     "dev:client": "bun run --filter client dev"
   },
@@ -15,6 +16,7 @@
     "@typescript-eslint/parser": "^8.47.0",
     "concurrently": "^9.2.1",
     "eslint": "^9.39.1",
+    "kill-port": "^2.0.1",
     "prettier": "^3.6.2"
   }
 }

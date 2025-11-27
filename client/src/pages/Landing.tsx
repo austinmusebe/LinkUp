@@ -75,9 +75,9 @@ function Landing() {
               (e.currentTarget.style.color = "rgba(255,255,255,0.8)")
             }
           >
-            Events
+            View Events
           </a>
-          <a
+          {/*<a
             className="landing-nav-item"
             href="#conferences"
             style={{
@@ -106,42 +106,34 @@ function Landing() {
             }
           >
             Plots
-          </a>
+          </a>*/}
           <Link
             to="/login"
             style={{
-              color: "white",
+              color: "black",
               textDecoration: "none",
               padding: "0.5rem 1.2rem",
               borderRadius: "6px",
-              background: "rgba(255,255,255,0.1)",
+              background: "#3F72CA",
               transition: "background 0.3s",
             }}
-            onMouseEnter={(e) =>
-              (e.currentTarget.style.background = "rgba(255,255,255,0.15)")
-            }
-            onMouseLeave={(e) =>
-              (e.currentTarget.style.background = "rgba(255,255,255,0.1)")
-            }
+            onMouseEnter={(e) => (e.currentTarget.style.background = "#FFFFFF")}
+            onMouseLeave={(e) => (e.currentTarget.style.background = "#3F72CA")}
           >
             Sign in
           </Link>
           <Link
             to="/signup"
             style={{
-              color: "white",
+              color: "black",
               textDecoration: "none",
               padding: "0.5rem 1.2rem",
               borderRadius: "6px",
-              background: "rgba(255,255,255,0.2)",
+              background: "#3F72CA",
               transition: "background 0.3s",
             }}
-            onMouseEnter={(e) =>
-              (e.currentTarget.style.background = "rgba(255,255,255,0.25)")
-            }
-            onMouseLeave={(e) =>
-              (e.currentTarget.style.background = "rgba(255,255,255,0.2)")
-            }
+            onMouseEnter={(e) => (e.currentTarget.style.background = "#FFFFFF")}
+            onMouseLeave={(e) => (e.currentTarget.style.background = "#3F72CA")}
           >
             Get Started
           </Link>
@@ -155,7 +147,7 @@ function Landing() {
           left: 0,
           right: 0,
           bottom: 0,
-          background: "linear-gradient(to bottom, #000000, #4D4D4D)",
+          background: "linear-gradient(to bottom, #000000, #CFDCF2)",
           borderTopLeftRadius: "20px",
           borderTopRightRadius: "20px",
           zIndex: 1, // Sit behind hero content
@@ -285,7 +277,7 @@ function Landing() {
               padding: "1rem 2.5rem",
               borderRadius: "8px",
               border: "none",
-              background: "rgba(255,255,255,0.15)",
+              background: "#9FBAE5",
               color: "white",
               cursor: "pointer",
               transition: "all 0.3s",
@@ -295,7 +287,7 @@ function Landing() {
               e.currentTarget.style.transform = "translateY(-2px)";
             }}
             onMouseLeave={(e) => {
-              e.currentTarget.style.background = "rgba(255,255,255,0.15)";
+              e.currentTarget.style.background = "#9FBAE5";
               e.currentTarget.style.transform = "translateY(0)";
             }}
           >

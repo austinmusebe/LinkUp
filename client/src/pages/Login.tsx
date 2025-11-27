@@ -1,6 +1,7 @@
 import { useState, FormEvent } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { useAuth } from "../contexts/AuthContext";
+import jazzImage from "../assets/images/jazz-image.jpg";
 
 function Login() {
   const navigate = useNavigate();
@@ -26,18 +27,35 @@ function Login() {
   };
 
   return (
-    <div style={{ maxWidth: "400px", margin: "0 auto" }}>
+    <div
+      style={{
+        width: "100%",
+        minHeight: "100vh",
+        backgroundImage: `url(${jazzImage})`,
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+      }}
+    >
       <div
         style={{
           backgroundColor: "#D9D9D9",
           borderRadius: "6px",
           justifySelf: "center",
-          marginTop: "30vh",
           fontFamily: "SF Pro, serif",
           padding: "50px",
+          opacity: "90%",
         }}
       >
-        <h2>Login</h2>
+        <h2
+          style={{
+            fontSize: "40px",
+            fontFamily: "SF Pro Display",
+            fontWeight: "bolder",
+          }}
+        >
+          Log in
+        </h2>
 
         {error && (
           <div
