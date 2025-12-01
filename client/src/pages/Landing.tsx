@@ -2,6 +2,8 @@ import { Link } from "react-router-dom";
 import calendarEmoji from "../assets/calendar-emoji.png";
 import computerEmoji from "../assets/computer-emoji.png";
 import linkEmoji from "../assets/link-emoji.png";
+import landingOne from "../assets/images/landing-page-one.jpg";
+import landingTwo from "../assets/images/landing-page-two.jpg";
 
 function Landing() {
   return (
@@ -77,36 +79,6 @@ function Landing() {
           >
             View Events
           </a>
-          {/*<a
-            className="landing-nav-item"
-            href="#conferences"
-            style={{
-              color: "rgba(255,255,255,0.8)",
-              textDecoration: "none",
-              transition: "color 0.3s",
-            }}
-            onMouseEnter={(e) => (e.currentTarget.style.color = "white")}
-            onMouseLeave={(e) =>
-              (e.currentTarget.style.color = "rgba(255,255,255,0.8)")
-            }
-          >
-            Conferences
-          </a>
-          <a
-            className="landing-nav-item"
-            href="#plots"
-            style={{
-              color: "rgba(255,255,255,0.8)",
-              textDecoration: "none",
-              transition: "color 0.3s",
-            }}
-            onMouseEnter={(e) => (e.currentTarget.style.color = "white")}
-            onMouseLeave={(e) =>
-              (e.currentTarget.style.color = "rgba(255,255,255,0.8)")
-            }
-          >
-            Plots
-          </a>*/}
           <Link
             to="/login"
             style={{
@@ -139,21 +111,21 @@ function Landing() {
           </Link>
         </div>
       </nav>
-      {/* --- NEW GRADIENT BACKGROUND --- */}
+
+      {/* --- BACKGROUND GRADIENT --- */}
       <div
         style={{
           position: "absolute",
-          top: "130px", // 100px assumed nav height + 30px
+          top: "130px",
           left: 0,
           right: 0,
           bottom: 0,
           background: "linear-gradient(to bottom, #000000, #CFDCF2)",
           borderTopLeftRadius: "20px",
           borderTopRightRadius: "20px",
-          zIndex: 1, // Sit behind hero content
+          zIndex: 1,
         }}
       />
-      {/* --- END NEW GRADIENT BACKGROUND --- */}
 
       {/* Hero Section */}
       <div
@@ -168,55 +140,107 @@ function Landing() {
           zIndex: 2,
         }}
       >
-        {/* Floating Card - Left */}
-        <div
-          style={{
-            position: "absolute",
-            top: "20%",
-            left: "15%",
-            width: "150px",
-            height: "150px",
-            background: "rgba(255,255,255,0.08)",
-            backdropFilter: "blur(10px)",
-            borderRadius: "20px",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            transform: "rotate(-15deg)",
-            boxShadow: "0 8px 32px rgba(0,0,0,0.3)",
-            animation: "float 6s ease-in-out infinite",
-          }}
-        >
-          <div
-            style={{ fontSize: "4rem", filter: "grayscale(1) brightness(1.2)" }}
-          >
-            <img src={calendarEmoji} alt="calendarEmoji" />
-          </div>
-        </div>
-
-        {/* Floating Card - Right */}
+        {/* --- POLAROID LEFT --- */}
         <div
           style={{
             position: "absolute",
             top: "15%",
-            right: "12%",
-            width: "180px",
-            height: "180px",
-            background: "rgba(255,255,255,0.08)",
-            backdropFilter: "blur(10px)",
-            borderRadius: "20px",
+            left: "-5%", // Pushed partially off screen
+            width: "25vw", // Dynamic width
+            minWidth: "300px",
+            height: "55vh", // Tall vertical look
+            background: "#ffffff",
+            padding: "1rem 1rem 3rem 1rem", // Extra padding bottom for polaroid look
+            transform: "rotate(6deg)",
+            boxShadow: "0 20px 50px rgba(0,0,0,0.5)",
+            zIndex: 1,
             display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            transform: "rotate(15deg)",
-            boxShadow: "0 8px 32px rgba(0,0,0,0.3)",
-            animation: "float 6s ease-in-out infinite 1s",
+            flexDirection: "column",
+            gap: "0.5rem",
           }}
         >
+          {/* Polaroid Title */}
           <div
-            style={{ fontSize: "4rem", filter: "grayscale(1) brightness(1.2)" }}
+            style={{
+              textAlign: "center",
+              color: "#333",
+              fontSize: "1.5rem",
+              fontWeight: "600",
+              fontFamily: "'Courier New', Courier, monospace", // Typewriter feel
+              paddingBottom: "0.5rem",
+            }}
           >
-            <img src={computerEmoji} alt="Computer Emoji" />
+            Plan Ahead
+          </div>
+          {/* Polaroid Image Area */}
+          <div
+            style={{
+              flex: 1,
+              background: "#f0f0f0",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              overflow: "hidden",
+              border: "1px solid #ddd",
+            }}
+          >
+            <img
+              src={landingOne}
+              alt="Calendar"
+              style={{ width: "100%", height: "auto", objectFit: "contain" }}
+            />
+          </div>
+        </div>
+
+        {/* --- POLAROID RIGHT --- */}
+        <div
+          style={{
+            position: "absolute",
+            top: "10%",
+            right: "-5%", // Pushed partially off screen
+            width: "25vw",
+            minWidth: "300px",
+            height: "55vh",
+            background: "#ffffff",
+            padding: "1rem 1rem 3rem 1rem",
+            transform: "rotate(-8deg)",
+            boxShadow: "0 20px 50px rgba(0,0,0,0.5)",
+            zIndex: 1,
+            display: "flex",
+            flexDirection: "column",
+            gap: "0.5rem",
+          }}
+        >
+          {/* Polaroid Title */}
+          <div
+            style={{
+              textAlign: "center",
+              color: "#333",
+              fontSize: "1.5rem",
+              fontWeight: "600",
+              fontFamily: "'Courier New', Courier, monospace",
+              paddingBottom: "0.5rem",
+            }}
+          >
+            Stay Connected
+          </div>
+          {/* Polaroid Image Area */}
+          <div
+            style={{
+              flex: 1,
+              background: "#f0f0f0", // Light gray background for image area
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              overflow: "hidden",
+              border: "1px solid #ddd",
+            }}
+          >
+            <img
+              src={landingTwo}
+              alt="Computer"
+              style={{ width: "100%", height: "auto", objectFit: "contain" }}
+            />
           </div>
         </div>
 
@@ -227,6 +251,7 @@ function Landing() {
             fontSize: "6rem",
             animation: "float 5s ease-in-out infinite",
             filter: "drop-shadow(0 4px 20px rgba(255,255,255,0.1))",
+            zIndex: 10, // Ensure above photos
           }}
         >
           <img
@@ -247,6 +272,8 @@ function Landing() {
             lineHeight: "1.2",
             marginBottom: "1.5rem",
             color: "white",
+            zIndex: 10, // Ensure above photos
+            textShadow: "0 4px 12px rgba(0,0,0,0.5)", // Added shadow for readability over photos if they overlap
           }}
         >
           Find, create and share
@@ -259,17 +286,19 @@ function Landing() {
         <p
           style={{
             fontSize: "1.2rem",
-            color: "rgba(255,255,255,0.6)",
+            color: "rgba(255,255,255,0.8)",
             marginBottom: "3rem",
             textAlign: "center",
             fontFamily: "'SF Pro', serif",
+            zIndex: 10,
+            textShadow: "0 2px 4px rgba(0,0,0,0.5)",
           }}
         >
           Fill up your calendar and grow quicker.
         </p>
 
         {/* CTA Button */}
-        <Link to="/signup" style={{ textDecoration: "none" }}>
+        <Link to="/signup" style={{ textDecoration: "none", zIndex: 10 }}>
           <button
             className="landing-join-button"
             style={{
@@ -281,6 +310,7 @@ function Landing() {
               color: "white",
               cursor: "pointer",
               transition: "all 0.3s",
+              zIndex: 10,
             }}
             onMouseEnter={(e) => {
               e.currentTarget.style.background = "rgba(255,255,255,0.2)";
@@ -299,10 +329,10 @@ function Landing() {
       <style>{`
         @keyframes float {
           0%, 100% {
-            transform: translateY(0) rotate(var(--rotation, 0deg));
+            transform: translateY(0);
           }
           50% {
-            transform: translateY(-20px) rotate(var(--rotation, 0deg));
+            transform: translateY(-20px);
           }
         }
       `}</style>
