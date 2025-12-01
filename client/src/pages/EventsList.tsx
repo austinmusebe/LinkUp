@@ -543,18 +543,6 @@ function EventsList() {
                     </div>
                   </div>
                 </div>
-                <button
-                  style={{
-                    background: "none",
-                    border: "none",
-                    fontSize: "1.5rem",
-                    cursor: "pointer",
-                    padding: 0,
-                    color: "#666",
-                  }}
-                >
-                  ⋮
-                </button>
               </div>
 
               {/* Image Area */}
@@ -634,10 +622,10 @@ function EventsList() {
                   }}
                 >
                   {event.description
-                    ? event.description.length > 80
-                      ? event.description.substring(0, 80) + "..."
+                    ? event.description.length > 100
+                      ? event.description.substring(0, 100) + "..."
                       : event.description
-                    : "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor"}
+                    : "There is no event description."}
                 </p>
 
                 {/* Action Buttons */}
@@ -753,18 +741,6 @@ function EventsList() {
                         </div>
                       </div>
                     </div>
-                    <button
-                      style={{
-                        background: "none",
-                        border: "none",
-                        fontSize: "1.5rem",
-                        cursor: "pointer",
-                        padding: 0,
-                        color: "#666",
-                      }}
-                    >
-                      ⋮
-                    </button>
                   </div>
 
                   <div
@@ -828,10 +804,10 @@ function EventsList() {
                       }}
                     >
                       {event.description
-                        ? event.description.length > 80
-                          ? event.description.substring(0, 80) + "..."
+                        ? event.description.length > 100
+                          ? event.description.substring(0, 100) + "..."
                           : event.description
-                        : "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor"}
+                        : "There is no event description."}
                     </p>
 
                     <div
