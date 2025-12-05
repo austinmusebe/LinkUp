@@ -244,7 +244,7 @@ function Landing() {
           </div>
         </div>
 
-        {/* Center Chain Icon */}
+        {/* Center Link Icon */}
         <div
           style={{
             marginBottom: "3rem",

@@ -57,7 +57,7 @@ const app = new Elysia()
   // api check
   .get("/", () => ({ message: "LinkUp API - Server Running" }))
 
-  // ===== AUTH ROUTES =====
+  // auth routes
   .post("/api/auth/signup", async ({ body }: any) => {
     try {
       const { name, email, password } = body;
@@ -167,7 +167,7 @@ const app = new Elysia()
     }
   })
 
-  // ===== USER PROFILE ROUTES =====
+  // user routes
   .put("/api/users/profile", async ({ headers, body }: any) => {
     const auth = authMiddleware(headers.authorization);
     if (!auth.success) {
@@ -239,7 +239,7 @@ const app = new Elysia()
     };
   })
 
-  // ===== EVENT ROUTES =====
+  // event routes
   .get("/api/events", async () => {
     try {
       const events = await Event.find()
@@ -256,7 +256,7 @@ const app = new Elysia()
     }
   })
 
-  // NEW: Recommended events endpoint
+  // event endpoints
   .get("/api/events/recommended", async ({ headers }) => {
     const auth = authMiddleware(headers.authorization);
     if (!auth.success) {
