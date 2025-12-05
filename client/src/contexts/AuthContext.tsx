@@ -21,12 +21,12 @@ interface AuthContextType {
   token: string | null;
   login: (
     email: string,
-    password: string
+    password: string,
   ) => Promise<{ success: boolean; error?: string }>;
   signup: (
     name: string,
     email: string,
-    password: string
+    password: string,
   ) => Promise<{ success: boolean; error?: string }>;
   logout: () => void;
   updateUser: (userData: Partial<User>) => void;
@@ -38,7 +38,7 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
   const [token, setToken] = useState<string | null>(
-    localStorage.getItem("token")
+    localStorage.getItem("token"),
   );
   const [loading, setLoading] = useState(true);
 
@@ -51,7 +51,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
   }, [token]);
 
-  // Fetch user on mount if token exists
+  // fetch user on mount if token exists
   useEffect(() => {
     const fetchUser = async () => {
       if (token) {
@@ -83,7 +83,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         {
           email,
           password,
-        }
+        },
       );
 
       if (response.data.success) {
@@ -108,7 +108,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
           name,
           email,
           password,
-        }
+        },
       );
 
       if (response.data.success) {

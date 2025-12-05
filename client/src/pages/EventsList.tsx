@@ -3,7 +3,11 @@ import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../contexts/AuthContext";
 import axios from "axios";
 import linkEmoji from "../assets/link-emoji.png";
+// Add this near your imports
+const PLACEHOLDER_IMG =
+  "data:image/svg+xml,%3Csvg width='100' height='100' xmlns='http://www.w3.org/2000/svg'%3E%3Cg%3E%3Ccircle cx='50' cy='30' r='20' fill='%23999'/%3E%3Ccircle cx='30' cy='65' r='15' fill='%23999'/%3E%3Crect x='55' y='55' width='25' height='25' rx='5' fill='%23999'/%3E%3C/g%3E%3C/svg%3E";
 
+//interface model
 interface Event {
   _id: string;
   title: string;
@@ -11,7 +15,7 @@ interface Event {
   date: string;
   location?: string;
   categories?: string[];
-  eventImage?: string; // Add this line
+  image?: string;
   createdAt: string;
   createdBy: {
     _id: string;
@@ -23,22 +27,26 @@ interface Event {
 }
 
 function EventsList() {
+  // state values
   const { user, logout } = useAuth();
   const navigate = useNavigate();
+  const [showProfileDropdown, setShowProfileDropdown] = useState(false);
+  // event states
   const [recommendedEvents, setRecommendedEvents] = useState<Event[]>([]);
   const [allEvents, setAllEvents] = useState<Event[]>([]);
   const [filteredEvents, setFilteredEvents] = useState<Event[]>([]);
+  // category and date states
   const [categories, setCategories] = useState<string[]>([]);
   const [selectedCategory, setSelectedCategory] =
     useState<string>("All Categories");
+  const [showCategoryDropdown, setShowCategoryDropdown] = useState(false);
   const [selectedDateFilter, setSelectedDateFilter] =
     useState<string>("All Time");
+  const [showDateDropdown, setShowDateDropdown] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
+  //loading and error states
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [showCategoryDropdown, setShowCategoryDropdown] = useState(false);
-  const [showDateDropdown, setShowDateDropdown] = useState(false);
-  const [showProfileDropdown, setShowProfileDropdown] = useState(false);
 
   const dateFilters = [
     "All Time",
@@ -51,7 +59,7 @@ function EventsList() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        // Fetch categories
+        // fetch categories
         const categoriesResponse = await axios.get(
           "http://localhost:3000/api/categories",
         );
@@ -59,7 +67,7 @@ function EventsList() {
           setCategories(categoriesResponse.data.data);
         }
 
-        // Fetch all events
+        // fetch all events
         const eventsResponse = await axios.get(
           "http://localhost:3000/api/events",
         );
@@ -551,16 +559,16 @@ function EventsList() {
                 style={{
                   width: "100%",
                   height: "150px",
-                  background: event.eventImage ? "transparent" : "#C4C4C4",
+                  background: event.image ? "transparent" : "#C4C4C4",
                   display: "flex",
                   alignItems: "center",
                   justifyContent: "center",
                   overflow: "hidden",
                 }}
               >
-                {event.eventImage ? (
+                {event.image ? (
                   <img
-                    src={event.eventImage}
+                    src={event.image || PLACEHOLDER_IMG}
                     alt={event.title}
                     style={{
                       width: "100%",
@@ -570,7 +578,7 @@ function EventsList() {
                   />
                 ) : (
                   <img
-                    src="data:image/svg+xml,%3Csvg width='100' height='100' xmlns='http://www.w3.org/2000/svg'%3E%3Cg%3E%3Ccircle cx='50' cy='30' r='20' fill='%23999'/%3E%3Ccircle cx='30' cy='65' r='15' fill='%23999'/%3E%3Crect x='55' y='55' width='25' height='25' rx='5' fill='%23999'/%3E%3C/g%3E%3C/svg%3E"
+                    src={event.image || PLACEHOLDER_IMG}
                     alt="placeholder"
                     style={{ opacity: 0.5 }}
                   />
@@ -747,17 +755,32 @@ function EventsList() {
                     style={{
                       width: "100%",
                       height: "150px",
-                      background: "#C4C4C4",
+                      background: event.image ? "transparent" : "#C4C4C4",
                       display: "flex",
                       alignItems: "center",
                       justifyContent: "center",
+                      overflow: "hidden",
                     }}
                   >
-                    <img
-                      src="data:image/svg+xml,%3Csvg width='100' height='100' xmlns='http://www.w3.org/2000/svg'%3E%3Cg%3E%3Ccircle cx='50' cy='30' r='20' fill='%23999'/%3E%3Ccircle cx='30' cy='65' r='15' fill='%23999'/%3E%3Crect x='55' y='55' width='25' height='25' rx='5' fill='%23999'/%3E%3C/g%3E%3C/svg%3E"
-                      alt="placeholder"
-                      style={{ opacity: 0.5 }}
-                    />
+                    {event.image ? (
+                      // show the actual image if it exists
+                      <img
+                        src={event.image || PLACEHOLDER_IMG}
+                        alt={event.title}
+                        style={{
+                          width: "100%",
+                          height: "100%",
+                          objectFit: "cover",
+                        }}
+                      />
+                    ) : (
+                      // show placeholder if no image
+                      <img
+                        src="data:image/svg+xml,%3Csvg width='100' height='100' xmlns='http://www.w3.org/2000/svg'%3E%3Cg%3E%3Ccircle cx='50' cy='30' r='20' fill='%23999'/%3E%3Ccircle cx='30' cy='65' r='15' fill='%23999'/%3E%3Crect x='55' y='55' width='25' height='25' rx='5' fill='%23999'/%3E%3C/g%3E%3C/svg%3E"
+                        alt="placeholder"
+                        style={{ opacity: 0.5 }}
+                      />
+                    )}
                   </div>
 
                   <div style={{ padding: "1rem" }}>

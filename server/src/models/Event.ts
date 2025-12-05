@@ -7,7 +7,7 @@ const eventSchema = new mongoose.Schema({
   date: { type: Date, default: Date.now },
   location: String,
   categories: [{ type: String, enum: INTEREST_CATEGORIES }],
-  eventImage: { type: String, default: "" }, // Base64 image string
+  image: { type: String, default: "" },
   createdBy: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "User",

@@ -54,7 +54,7 @@ const app = new Elysia()
     }),
   )
 
-  // Health check
+  // api check
   .get("/", () => ({ message: "LinkUp API - Server Running" }))
 
   // ===== AUTH ROUTES =====
