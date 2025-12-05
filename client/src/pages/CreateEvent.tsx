@@ -56,7 +56,6 @@ function CreateEvent() {
     setError(null);
 
     try {
-      // Create event first
       const response = await axios.post("http://localhost:3000/api/events", {
         ...formData,
         date: new Date(formData.date),
@@ -79,7 +78,7 @@ function CreateEvent() {
   return (
     <div
       style={{
-        background: "#D9D9D9",
+        background: "linear-gradient(to bottom, #E5E5E5 0%, #D0D8E8 100%)",
         minHeight: "100vh",
         padding: "3rem",
         fontFamily: '"EB Garamond", serif',
@@ -115,7 +114,7 @@ function CreateEvent() {
           {/* Event Image Upload */}
           <div
             style={{
-              background: "#E8E8E8",
+              background: "#EFEFEF",
               borderRadius: "12px",
               padding: "2rem",
               marginBottom: "1.5rem",
@@ -206,7 +205,7 @@ function CreateEvent() {
           {/* Event Title */}
           <div
             style={{
-              background: "#E8E8E8",
+              background: "#EFEFEF",
               borderRadius: "12px",
               padding: "2rem",
               marginBottom: "1.5rem",
@@ -246,7 +245,7 @@ function CreateEvent() {
           {/* Description */}
           <div
             style={{
-              background: "#E8E8E8",
+              background: "#EFEFEF",
               borderRadius: "12px",
               padding: "2rem",
               marginBottom: "1.5rem",
@@ -286,7 +285,7 @@ function CreateEvent() {
           {/* Date & Time */}
           <div
             style={{
-              background: "#E8E8E8",
+              background: "#EFEFEF",
               borderRadius: "12px",
               padding: "2rem",
               marginBottom: "1.5rem",
@@ -326,7 +325,7 @@ function CreateEvent() {
           {/* Location */}
           <div
             style={{
-              background: "#E8E8E8",
+              background: "#EFEFEF",
               borderRadius: "12px",
               padding: "2rem",
               marginBottom: "1.5rem",
@@ -365,7 +364,7 @@ function CreateEvent() {
           {/* Categories Selection */}
           <div
             style={{
-              background: "#E8E8E8",
+              background: "#EFEFEF",
               borderRadius: "12px",
               padding: "2rem",
               marginBottom: "2rem",
@@ -488,10 +487,6 @@ function CreateEvent() {
           )}
         </form>
       </div>
-
-      <style>{`
-        @import url('https://fonts.googleapis.com/css2?family=EB+Garamond:wght@400;500;600;700&display=swap');
-      `}</style>
     </div>
   );
 }
