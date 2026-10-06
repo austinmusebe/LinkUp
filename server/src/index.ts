@@ -9,7 +9,7 @@ import { generateToken, authMiddleware } from "./middleware/auth";
 
 // MongoDB Connection
 const MONGODB_URI =
-  process.env.MONGODB_URI || "mongodb://localhost:27017/linkup";
+  process.env.MONGODB_URI;
 
 // Connection caching for Serverless environments (Vercel)
 // This prevents exhausting database connections by reusing the connection across warm functions.
@@ -463,8 +463,8 @@ const app = new Elysia()
     }
   })
 
-  // Remove local .listen() to let Vercel handle it
-  // .listen(3000);
+// Remove local .listen() to let Vercel handle it
+// .listen(3000);
 
 if (process.env.NODE_ENV !== "production") {
   app.listen(3000);
