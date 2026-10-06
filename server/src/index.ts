@@ -458,6 +458,12 @@ const app = new Elysia()
     }
   })
 
-  .listen(3000);
+  // Remove local .listen() to let Vercel handle it
+  // .listen(3000);
 
-console.log(`Server running at http://localhost:${app.server?.port}`);
+if (process.env.NODE_ENV !== "production") {
+  app.listen(3000);
+  console.log(`Server running at http://localhost:${app.server?.port}`);
+}
+
+export default app;
