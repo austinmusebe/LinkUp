@@ -11,10 +11,15 @@ import { generateToken, authMiddleware } from "./middleware/auth";
 const MONGODB_URI =
   process.env.MONGODB_URI || "mongodb://localhost:27017/linkup";
 
-mongoose
-  .connect(MONGODB_URI)
-  .then(() => console.log("✅ MongoDB Connected"))
-  .catch((err) => console.error("❌ MongoDB Connection Error:", err));
+// Connection caching for Serverless environments (Vercel)
+// This prevents exhausting database connections by reusing the connection across warm functions.
+const globalAny: any = global;
+if (!globalAny.mongooseConnection) {
+  globalAny.mongooseConnection = mongoose
+    .connect(MONGODB_URI)
+    .then(() => console.log("✅ MongoDB Connected"))
+    .catch((err) => console.error("❌ MongoDB Connection Error:", err));
+}
 
 // Recommendation Algorithm
 function calculateMatchScore(
