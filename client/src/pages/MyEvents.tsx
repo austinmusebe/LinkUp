@@ -30,7 +30,7 @@ function MyEvents() {
 
       try {
         const response = await axios.get(
-          `http://localhost:3000/api/events/user/${user.id}`,
+          `${import.meta.env.VITE_API_URL || 'http://localhost:3000'}/api/events/user/${user.id}`,
         );
 
         if (response.data.success) {
@@ -54,7 +54,7 @@ function MyEvents() {
 
     try {
       const response = await axios.delete(
-        `http://localhost:3000/api/events/${eventId}`,
+        `${import.meta.env.VITE_API_URL || 'http://localhost:3000'}/api/events/${eventId}`,
       );
 
       if (response.data.success) {

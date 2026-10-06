@@ -22,7 +22,7 @@ function Profile() {
   useEffect(() => {
     // Fetch available categories
     axios
-      .get("http://localhost:3000/api/categories")
+      .get(`${import.meta.env.VITE_API_URL || 'http://localhost:3000'}/api/categories`)
       .then((response) => {
         if (response.data.success) {
           setCategories(response.data.data);
@@ -40,7 +40,7 @@ function Profile() {
       setImagePreview(webpBase64);
 
       const response = await axios.post(
-        "http://localhost:3000/api/users/profile-picture",
+        `${import.meta.env.VITE_API_URL || 'http://localhost:3000'}/api/users/profile-picture`,
         {
           image: webpBase64,
         },
@@ -72,7 +72,7 @@ function Profile() {
 
     try {
       const response = await axios.put(
-        "http://localhost:3000/api/users/profile",
+        `${import.meta.env.VITE_API_URL || 'http://localhost:3000'}/api/users/profile`,
         {
           name,
           interests,

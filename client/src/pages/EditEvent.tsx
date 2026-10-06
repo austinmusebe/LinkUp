@@ -25,7 +25,7 @@ function EditEvent() {
   useEffect(() => {
     // Fetch categories
     axios
-      .get("http://localhost:3000/api/categories")
+      .get(`${import.meta.env.VITE_API_URL || 'http://localhost:3000'}/api/categories`)
       .then((response) => {
         if (response.data.success) {
           setCategories(response.data.data);
@@ -37,7 +37,7 @@ function EditEvent() {
     const fetchEvent = async () => {
       try {
         const response = await axios.get(
-          `http://localhost:3000/api/events/${id}`,
+          `${import.meta.env.VITE_API_URL || 'http://localhost:3000'}/api/events/${id}`,
         );
 
         if (response.data.success) {
@@ -107,7 +107,7 @@ function EditEvent() {
 
     try {
       const response = await axios.put(
-        `http://localhost:3000/api/events/${id}`,
+        `${import.meta.env.VITE_API_URL || 'http://localhost:3000'}/api/events/${id}`,
         {
           ...formData,
           date: new Date(formData.date),

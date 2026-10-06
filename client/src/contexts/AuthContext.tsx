@@ -56,7 +56,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     const fetchUser = async () => {
       if (token) {
         try {
-          const response = await axios.get("http://localhost:3000/api/auth/me");
+          const response = await axios.get(`${import.meta.env.VITE_API_URL || 'http://localhost:3000'}/api/auth/me`);
           if (response.data.success) {
             setUser(response.data.data);
           } else {
@@ -79,7 +79,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const login = async (email: string, password: string) => {
     try {
       const response = await axios.post(
-        "http://localhost:3000/api/auth/login",
+        `${import.meta.env.VITE_API_URL || 'http://localhost:3000'}/api/auth/login`,
         {
           email,
           password,
@@ -103,7 +103,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const signup = async (name: string, email: string, password: string) => {
     try {
       const response = await axios.post(
-        "http://localhost:3000/api/auth/signup",
+        `${import.meta.env.VITE_API_URL || 'http://localhost:3000'}/api/auth/signup`,
         {
           name,
           email,

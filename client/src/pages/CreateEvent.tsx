@@ -20,7 +20,7 @@ function CreateEvent() {
 
   useEffect(() => {
     axios
-      .get("http://localhost:3000/api/categories")
+      .get(`${import.meta.env.VITE_API_URL || 'http://localhost:3000'}/api/categories`)
       .then((response) => {
         if (response.data.success) {
           setCategories(response.data.data);
@@ -57,7 +57,7 @@ function CreateEvent() {
     setError(null);
 
     try {
-      const response = await axios.post("http://localhost:3000/api/events", {
+      const response = await axios.post(`${import.meta.env.VITE_API_URL || 'http://localhost:3000'}/api/events`, {
         ...formData,
         date: new Date(formData.date),
         eventImage: eventImage,

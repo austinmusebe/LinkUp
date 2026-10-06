@@ -35,7 +35,7 @@ function EventDetails() {
     const fetchEvent = async () => {
       try {
         const response = await axios.get(
-          `http://localhost:3000/api/events/${id}`,
+          `${import.meta.env.VITE_API_URL || 'http://localhost:3000'}/api/events/${id}`,
         );
 
         if (response.data.success) {
@@ -59,7 +59,7 @@ function EventDetails() {
 
     try {
       const response = await axios.delete(
-        `http://localhost:3000/api/events/${id}`,
+        `${import.meta.env.VITE_API_URL || 'http://localhost:3000'}/api/events/${id}`,
       );
 
       if (response.data.success) {

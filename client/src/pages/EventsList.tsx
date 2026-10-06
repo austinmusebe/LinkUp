@@ -61,7 +61,7 @@ function EventsList() {
       try {
         // fetch categories
         const categoriesResponse = await axios.get(
-          "http://localhost:3000/api/categories",
+          `${import.meta.env.VITE_API_URL || 'http://localhost:3000'}/api/categories`,
         );
         if (categoriesResponse.data.success) {
           setCategories(categoriesResponse.data.data);
@@ -69,7 +69,7 @@ function EventsList() {
 
         // fetch all events
         const eventsResponse = await axios.get(
-          "http://localhost:3000/api/events",
+          `${import.meta.env.VITE_API_URL || 'http://localhost:3000'}/api/events`,
         );
         if (eventsResponse.data.success) {
           setAllEvents(eventsResponse.data.data);
@@ -80,7 +80,7 @@ function EventsList() {
         if (user) {
           try {
             const recommendedResponse = await axios.get(
-              "http://localhost:3000/api/events/recommended",
+              `${import.meta.env.VITE_API_URL || 'http://localhost:3000'}/api/events/recommended`,
             );
             if (recommendedResponse.data.success) {
               setRecommendedEvents(recommendedResponse.data.data);
