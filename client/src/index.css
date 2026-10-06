@@ -88,3 +88,7 @@ button:focus-visible {
 login-button:hover {
   transform: translateY(-200px);
 }
+
+input, textarea, select {
+  color: #333;
+}

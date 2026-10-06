@@ -215,6 +215,7 @@ function EventsList() {
             borderRadius: "8px",
             border: "none",
             background: "#C4C4C4",
+            color: "#333",
             fontSize: "1rem",
             textAlign: "center",
           }}

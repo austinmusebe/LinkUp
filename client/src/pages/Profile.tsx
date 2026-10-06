@@ -82,7 +82,7 @@ function Profile() {
       if (response.data.success) {
         updateUser(response.data.data);
         setSuccess(true);
-        setTimeout(() => setSuccess(false), 3000);
+        setTimeout(() => navigate('/events'), 1000);
       } else {
         setError(response.data.error || "Failed to update profile");
       }
@@ -460,6 +460,7 @@ function Profile() {
                   border: "2px solid #C4C4C4",
                   borderRadius: "8px",
                   background: "white",
+                  color: "#333",
                   fontFamily: '"SF Pro", serif',
                 }}
               />
