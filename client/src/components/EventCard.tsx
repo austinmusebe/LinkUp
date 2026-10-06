@@ -15,6 +15,7 @@ interface EventCardProps {
       profilePicture?: string;
     };
     matchScore?: number;
+    image?: string;
   };
   showMatchScore?: boolean;
 }
@@ -65,11 +66,23 @@ function EventCard({ event, showMatchScore = false }: EventCardProps) {
                 borderRadius: "20px",
                 fontSize: "0.75rem",
                 fontWeight: "bold",
+                zIndex: 2,
               }}
             >
               {Math.round(event.matchScore)}% Match
             </div>
           )}
+
+        {/* Event Image */}
+        {event.image && (
+          <div style={{ margin: "-1.5rem -1.5rem 1rem -1.5rem", height: "180px", overflow: "hidden" }}>
+            <img 
+              src={event.image} 
+              alt={event.title} 
+              style={{ width: "100%", height: "100%", objectFit: "cover" }} 
+            />
+          </div>
+        )}
 
         {/* Event Title */}
         <h3

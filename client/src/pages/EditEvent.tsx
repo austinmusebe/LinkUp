@@ -111,12 +111,12 @@ function EditEvent() {
         {
           ...formData,
           date: new Date(formData.date),
-          eventImage: eventImage,
+          image: eventImage,
         },
       );
 
       if (response.data.success) {
-        navigate(`/events/${id}`);
+        navigate('/my-events');
       } else {
         setError(response.data.error || "Failed to update event");
       }
@@ -166,7 +166,7 @@ function EditEvent() {
             <strong>❌ Error:</strong> {error}
           </div>
           <button
-            onClick={() => navigate(-1)}
+            onClick={() => navigate('/my-events')}
             style={{
               padding: "0.75rem 1.5rem",
               borderRadius: "8px",
@@ -574,7 +574,7 @@ function EditEvent() {
           >
             <button
               type="button"
-              onClick={() => navigate(`/events/${id}`)}
+              onClick={() => navigate('/my-events')}
               style={{
                 padding: "1rem 2.5rem",
                 fontSize: "1.1rem",

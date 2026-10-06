@@ -12,7 +12,7 @@ interface Event {
   date: string;
   location?: string;
   categories?: string[];
-  eventImage?: string;
+  image?: string;
   createdAt: string;
 }
 
@@ -420,7 +420,7 @@ function MyEvents() {
                   style={{
                     width: "100%",
                     height: "180px",
-                    background: event.eventImage ? "transparent" : "#C4C4C4",
+                    background: event.image ? "transparent" : "#C4C4C4",
                     display: "flex",
                     alignItems: "center",
                     justifyContent: "center",
@@ -428,9 +428,9 @@ function MyEvents() {
                     cursor: "pointer",
                   }}
                 >
-                  {event.eventImage ? (
+                  {event.image ? (
                     <img
-                      src={event.eventImage}
+                      src={event.image}
                       alt={event.title}
                       style={{
                         width: "100%",
