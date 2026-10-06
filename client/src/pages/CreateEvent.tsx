@@ -1,6 +1,7 @@
 import { useState, useEffect, FormEvent, ChangeEvent } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import { compressImage } from "../utils/imageCompression";
 
 function CreateEvent() {
   const navigate = useNavigate();
@@ -28,17 +29,17 @@ function CreateEvent() {
       .catch((err) => console.error("Failed to fetch categories:", err));
   }, []);
 
-  const handleImageChange = (e: ChangeEvent<HTMLInputElement>) => {
+  const handleImageChange = async (e: ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
 
-    const reader = new FileReader();
-    reader.onloadend = () => {
-      const base64String = reader.result as string;
-      setEventImage(base64String);
-      setImagePreview(base64String);
-    };
-    reader.readAsDataURL(file);
+    try {
+      const webpBase64 = await compressImage(file);
+      setEventImage(webpBase64);
+      setImagePreview(webpBase64);
+    } catch (err) {
+      console.error("Failed to compress image", err);
+    }
   };
 
   const toggleCategory = (category: string) => {

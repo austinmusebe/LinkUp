@@ -2,6 +2,7 @@ import { useState, useEffect, FormEvent, ChangeEvent } from "react";
 import { useAuth } from "../contexts/AuthContext";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import { compressImage } from "../utils/imageCompression";
 import linkEmoji from "../assets/link-emoji.png";
 
 function Profile() {
@@ -34,29 +35,25 @@ function Profile() {
     const file = e.target.files?.[0];
     if (!file) return;
 
-    const reader = new FileReader();
-    reader.onloadend = async () => {
-      const base64String = reader.result as string;
-      setImagePreview(base64String);
+    try {
+      const webpBase64 = await compressImage(file);
+      setImagePreview(webpBase64);
 
-      try {
-        const response = await axios.post(
-          "http://localhost:3000/api/users/profile-picture",
-          {
-            image: base64String,
-          },
-        );
+      const response = await axios.post(
+        "http://localhost:3000/api/users/profile-picture",
+        {
+          image: webpBase64,
+        },
+      );
 
-        if (response.data.success) {
-          updateUser({ profilePicture: base64String });
-          setSuccess(true);
-          setTimeout(() => setSuccess(false), 3000);
-        }
-      } catch (err) {
-        setError("Failed to upload profile picture");
+      if (response.data.success) {
+        updateUser({ profilePicture: webpBase64 });
+        setSuccess(true);
+        setTimeout(() => setSuccess(false), 3000);
       }
-    };
-    reader.readAsDataURL(file);
+    } catch (err) {
+      setError("Failed to upload profile picture");
+    }
   };
 
   const toggleInterest = (category: string) => {

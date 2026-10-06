@@ -2,6 +2,7 @@ import { useState, useEffect, FormEvent, ChangeEvent } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { useAuth } from "../contexts/AuthContext";
 import axios from "axios";
+import { compressImage } from "../utils/imageCompression";
 
 function EditEvent() {
   const { id } = useParams<{ id: string }>();
@@ -77,17 +78,17 @@ function EditEvent() {
     fetchEvent();
   }, [id, user]);
 
-  const handleImageChange = (e: ChangeEvent<HTMLInputElement>) => {
+  const handleImageChange = async (e: ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
 
-    const reader = new FileReader();
-    reader.onloadend = () => {
-      const base64String = reader.result as string;
-      setEventImage(base64String);
-      setImagePreview(base64String);
-    };
-    reader.readAsDataURL(file);
+    try {
+      const webpBase64 = await compressImage(file);
+      setEventImage(webpBase64);
+      setImagePreview(webpBase64);
+    } catch (err) {
+      console.error("Failed to compress image", err);
+    }
   };
 
   const toggleCategory = (category: string) => {
