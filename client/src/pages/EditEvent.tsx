@@ -3,11 +3,13 @@ import { useNavigate, useParams } from "react-router-dom";
 import { useAuth } from "../contexts/AuthContext";
 import axios from "axios";
 import { compressImage } from "../utils/imageCompression";
+import linkEmoji from "../assets/link-emoji.png";
 
 function EditEvent() {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
-  const { user } = useAuth();
+  const { user, logout } = useAuth();
+  const [showProfileDropdown, setShowProfileDropdown] = useState(false);
   const [categories, setCategories] = useState<string[]>([]);
   const [formData, setFormData] = useState({
     title: "",
@@ -135,7 +137,7 @@ function EditEvent() {
           background: "#D9D9D9",
           minHeight: "100vh",
           padding: "3rem",
-          fontFamily: '"EB Garamond", serif',
+          fontFamily: '"SF Pro", serif',
         }}
       >
         <p>Loading event...</p>
@@ -150,7 +152,7 @@ function EditEvent() {
           background: "#D9D9D9",
           minHeight: "100vh",
           padding: "3rem",
-          fontFamily: '"EB Garamond", serif',
+          fontFamily: '"SF Pro", serif',
         }}
       >
         <div style={{ maxWidth: "700px", margin: "0 auto" }}>
@@ -188,11 +190,171 @@ function EditEvent() {
       style={{
         background: "#D9D9D9",
         minHeight: "100vh",
-        padding: "3rem",
-        fontFamily: '"EB Garamond", serif',
+        width: "100%",
+        margin: 0,
+        padding: 0,
+        fontFamily: '"SF Pro", serif',
       }}
     >
-      <div style={{ maxWidth: "700px", margin: "0 auto" }}>
+      {/* Header */}
+      <header
+        style={{
+          background: "#000000",
+          padding: "1rem 3rem",
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+        }}
+      >
+        <div
+          style={{
+            display: "flex",
+            alignItems: "center",
+            gap: "0.5rem",
+            color: "white",
+            fontSize: "1.5rem",
+            fontWeight: "600",
+            cursor: "pointer",
+          }}
+          onClick={() => navigate("/")}
+        >
+          <img
+            src={linkEmoji}
+            alt="Link"
+            style={{ width: "30px", height: "30px" }}
+          />
+          LinkUp
+        </div>
+
+        <div
+          style={{
+            display: "flex",
+            alignItems: "center",
+            gap: "2rem",
+          }}
+        >
+          <div
+            onClick={() => navigate("/events")}
+            style={{
+              color: "white",
+              cursor: "pointer",
+              fontSize: "1.1rem",
+            }}
+          >
+            View Events
+          </div>
+          <div
+            onClick={() => navigate("/create")}
+            style={{
+              color: "white",
+              cursor: "pointer",
+              fontSize: "1.1rem",
+            }}
+          >
+            Create Event
+          </div>
+          <div
+            onClick={() => navigate("/my-events")}
+            style={{
+              color: "white",
+              cursor: "pointer",
+              fontSize: "1.1rem",
+            }}
+          >
+            My Events
+          </div>
+          <div style={{ position: "relative" }}>
+            <div
+              onClick={() => setShowProfileDropdown(!showProfileDropdown)}
+              style={{
+                width: "50px",
+                height: "50px",
+                borderRadius: "50%",
+                background: "#C4C4C4",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                overflow: "hidden",
+                cursor: "pointer",
+              }}
+            >
+              {user?.profilePicture ? (
+                <img
+                  src={user.profilePicture}
+                  alt={user.name}
+                  style={{
+                    width: "100%",
+                    height: "100%",
+                    objectFit: "cover",
+                  }}
+                />
+              ) : (
+                <svg width="30" height="30" viewBox="0 0 24 24" fill="#666">
+                  <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z" />
+                </svg>
+              )}
+            </div>
+
+            {showProfileDropdown && (
+              <div
+                style={{
+                  position: "absolute",
+                  top: "100%",
+                  right: 0,
+                  marginTop: "0.5rem",
+                  background: "white",
+                  borderRadius: "8px",
+                  boxShadow: "0 4px 12px rgba(0,0,0,0.15)",
+                  minWidth: "180px",
+                  zIndex: 100,
+                }}
+              >
+                <div
+                  onClick={() => {
+                    navigate("/profile");
+                    setShowProfileDropdown(false);
+                  }}
+                  style={{
+                    padding: "0.75rem 1rem",
+                    cursor: "pointer",
+                    borderBottom: "1px solid #eee",
+                    color: "#333",
+                  }}
+                  onMouseEnter={(e) =>
+                    (e.currentTarget.style.background = "#f5f5f5")
+                  }
+                  onMouseLeave={(e) =>
+                    (e.currentTarget.style.background = "transparent")
+                  }
+                >
+                  My Profile
+                </div>
+                <div
+                  onClick={() => {
+                    logout();
+                    navigate("/");
+                  }}
+                  style={{
+                    padding: "0.75rem 1rem",
+                    cursor: "pointer",
+                    color: "#dc3545",
+                  }}
+                  onMouseEnter={(e) =>
+                    (e.currentTarget.style.background = "#f5f5f5")
+                  }
+                  onMouseLeave={(e) =>
+                    (e.currentTarget.style.background = "transparent")
+                  }
+                >
+                  Log Out
+                </div>
+              </div>
+            )}
+          </div>
+        </div>
+      </header>
+
+      <div style={{ maxWidth: "700px", margin: "0 auto", padding: "3rem" }}>
         <h2
           style={{
             fontSize: "3rem",
@@ -376,7 +538,7 @@ function EditEvent() {
                 border: "2px solid #C4C4C4",
                 borderRadius: "8px",
                 background: "white",
-                fontFamily: '"EB Garamond", serif',
+                fontFamily: '"SF Pro", serif',
               }}
             />
           </div>
@@ -415,7 +577,7 @@ function EditEvent() {
                 border: "2px solid #C4C4C4",
                 borderRadius: "8px",
                 background: "white",
-                fontFamily: '"EB Garamond", serif',
+                fontFamily: '"SF Pro", serif',
                 resize: "vertical",
               }}
             />
@@ -456,7 +618,7 @@ function EditEvent() {
                 border: "2px solid #C4C4C4",
                 borderRadius: "8px",
                 background: "white",
-                fontFamily: '"EB Garamond", serif',
+                fontFamily: '"SF Pro", serif',
               }}
             />
           </div>
@@ -495,7 +657,7 @@ function EditEvent() {
                 border: "2px solid #C4C4C4",
                 borderRadius: "8px",
                 background: "white",
-                fontFamily: '"EB Garamond", serif',
+                fontFamily: '"SF Pro", serif',
               }}
             />
           </div>
@@ -584,7 +746,7 @@ function EditEvent() {
                 color: "#333",
                 cursor: "pointer",
                 fontWeight: "500",
-                fontFamily: '"EB Garamond", serif',
+                fontFamily: '"SF Pro", serif',
               }}
             >
               Cancel
@@ -605,7 +767,7 @@ function EditEvent() {
                     : "pointer",
                 opacity: saving || formData.categories.length === 0 ? 0.6 : 1,
                 fontWeight: "500",
-                fontFamily: '"EB Garamond", serif',
+                fontFamily: '"SF Pro", serif',
               }}
             >
               {saving ? "Saving..." : "Save Changes"}
