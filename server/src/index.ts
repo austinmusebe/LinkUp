@@ -17,8 +17,8 @@ const globalAny: any = global;
 if (!globalAny.mongooseConnection) {
   globalAny.mongooseConnection = mongoose
     .connect(MONGODB_URI)
-    .then(() => console.log("✅ MongoDB Connected"))
-    .catch((err) => console.error("❌ MongoDB Connection Error:", err));
+    .then(() => console.log("MongoDB Connected"))
+    .catch((err) => console.error("MongoDB Connection Error:", err));
 }
 
 // Recommendation Algorithm
@@ -40,15 +40,21 @@ function calculateMatchScore(
   return matchScore;
 }
 
+// CORS allowed origins (Local development + Vercel domains + optional custom domain)
+const allowedOrigins = [
+  "http://localhost:5173",
+  "http://localhost:5174",
+  "http://localhost:5175",
+  /\.vercel\.app$/, // Allows any vercel.app domain (production and preview deployments)
+  process.env.CLIENT_URL,
+].filter(Boolean) as (string | RegExp)[];
+
+
 // Elysia Server
 const app = new Elysia()
   .use(
     cors({
-      origin: [
-        "http://localhost:5173",
-        "http://localhost:5174",
-        "http://localhost:5175",
-      ],
+      origin: allowedOrigins,
       credentials: true,
     }),
   )
