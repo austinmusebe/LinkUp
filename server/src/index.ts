@@ -8,8 +8,7 @@ import { Event } from "./models/Event";
 import { generateToken, authMiddleware } from "./middleware/auth";
 
 // MongoDB Connection
-const MONGODB_URI =
-  process.env.MONGODB_URI;
+const MONGODB_URI = process.env.MONGODB_URI || "";
 
 // Connection caching for Serverless environments (Vercel)
 // This prevents exhausting database connections by reusing the connection across warm functions.
@@ -40,13 +39,12 @@ function calculateMatchScore(
   return matchScore;
 }
 
-// CORS allowed origins (Local development + Vercel domains + optional custom domain)
+// adding vercel origins
 const allowedOrigins = [
   "http://localhost:5173",
   "http://localhost:5174",
   "http://localhost:5175",
-  /\.vercel\.app$/, // Allows any vercel.app domain (production and preview deployments)
-  process.env.CLIENT_URL,
+  /\.vercel\.app$/, // Allows any vercel.app domain like the hobby ones
 ].filter(Boolean) as (string | RegExp)[];
 
 
@@ -455,7 +453,7 @@ const app = new Elysia()
         return { success: false, error: "Not authorized to update this event" };
       }
 
-      event.eventImage = image;
+      event.image = image;
       await event.save();
 
       const updatedEvent = await Event.findById(event._id).populate(

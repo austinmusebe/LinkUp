@@ -62,9 +62,10 @@ function EditEvent() {
             categories: event.categories || [],
           });
 
-          if (event.eventImage) {
-            setEventImage(event.eventImage);
-            setImagePreview(event.eventImage);
+          const existingImage = event.image || event.eventImage;
+          if (existingImage) {
+            setEventImage(existingImage);
+            setImagePreview(existingImage);
           }
         } else {
           setError(response.data.error || "Event not found");
