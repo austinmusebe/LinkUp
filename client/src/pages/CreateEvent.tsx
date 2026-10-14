@@ -1,8 +1,7 @@
-import { useState, useEffect, FormEvent, ChangeEvent } from "react";
+import { useState, useEffect, type FormEvent, type ChangeEvent } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { compressImage } from "../utils/imageCompression";
-import { Link } from "react-router-dom";
 import { useAuth } from "../contexts/AuthContext";
 import linkEmoji from "../assets/link-emoji.png";
 

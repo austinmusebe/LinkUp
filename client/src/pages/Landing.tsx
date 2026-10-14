@@ -1,6 +1,4 @@
 import { Link } from "react-router-dom";
-import calendarEmoji from "../assets/calendar-emoji.png";
-import computerEmoji from "../assets/computer-emoji.png";
 import linkEmoji from "../assets/link-emoji.png";
 import landingOne from "../assets/images/landing-page-one.jpg";
 import landingTwo from "../assets/images/landing-page-two.jpg";
